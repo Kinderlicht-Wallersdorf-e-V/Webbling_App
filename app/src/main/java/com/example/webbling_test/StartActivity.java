@@ -20,6 +20,13 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 public class StartActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         MainFragment.OnFragmentInteractionListener, BirthdayFragment.OnFragmentInteractionListener,
@@ -49,6 +56,8 @@ public class StartActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
 
         try{
             FragmentManager fragMan = getSupportFragmentManager();
@@ -137,6 +146,8 @@ public class StartActivity extends AppCompatActivity
     }
 
     private void init(){
+
+
 
     }
 

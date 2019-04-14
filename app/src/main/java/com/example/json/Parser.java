@@ -15,7 +15,7 @@ public class Parser {
      * @param json Json string
      * @return list of users sorted by days to next birthday
      */
-    public ArrayList<Member> createMembers(String json) {
+    public static ArrayList<Member> createMembers(String json) {
         ArrayList<Member> user = new ArrayList<>();
         try {
             JSONArray jObject = new JSONArray(json);

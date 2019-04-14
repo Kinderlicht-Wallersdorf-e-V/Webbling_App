@@ -7,6 +7,20 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.json.Member;
+import com.example.json.Parser;
+
+import java.util.ArrayList;
+import java.util.logging.ConsoleHandler;
 
 
 /**
@@ -51,20 +65,59 @@ public class MainFragment extends Fragment {
         return fragment;
     }
 
+    Button b_001;
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
+
+
+    }
+
+    private void init(View view){
+        b_001 = (Button) view.findViewById(R.id.b_test001);
+        System.out.println(b_001);
+        b_001.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
+                String url = "https://kinderlichtwdorf.webling.eu/api/1/member?format=full&apikey=eaab12f49595f7d8ca8a938cf0d082ec";
+
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        String output = response.toString();
+                        System.out.println(output);
+                        ArrayList<Member> list = Parser.createMembers(output);
+                        System.out.println(list.size());
+                        Toast.makeText(getActivity().getApplicationContext(), list.get(0).getName() , Toast.LENGTH_LONG).show();
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity().getApplicationContext(), "Hasn't worked", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                queue.add(stringRequest);
+            }
+        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        init(view);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -83,6 +136,7 @@ public class MainFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
     }
 
     @Override
