@@ -21,7 +21,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class StartActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TestFragment.OnFragmentInteractionListener,  MainFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        MainFragment.OnFragmentInteractionListener, BirthdayFragment.OnFragmentInteractionListener,
+        TodoFragment.OnFragmentInteractionListener, NewsletterFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,12 +108,12 @@ public class StartActivity extends AppCompatActivity
             // Handle the camera action
             fragmentClass = MainFragment.class;
         } else if (id == R.id.nav_Birthdays) {
-            fragmentClass = TestFragment.class;
+            fragmentClass = BirthdayFragment.class;
 
         } else if (id == R.id.nav_ToDo) {
-            fragmentClass = MainFragment.class;
+            fragmentClass = TodoFragment.class;
         } else if (id == R.id.nav_Newsletter) {
-            fragmentClass = MainFragment.class;
+            fragmentClass = NewsletterFragment.class;
         } else if (id == R.id.nav_Settings) {
             fragmentClass = MainFragment.class;
         } else{

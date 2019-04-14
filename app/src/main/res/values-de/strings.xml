@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Webbling_Test</string>
+    <string name="title_activity_start">StartActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Kinderlicht e.V.</string>
+    <string name="nav_header_subtitle">TODO</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_item_Overview">Übersicht</string>
+    <string name="nav_item_Birthdays">Geburtstage</string>
+    <string name="nav_item_ToDo">To-Do Liste</string>
+    <string name="nav_item_Newsletter">Benachrichtigungen</string>
+    <string name="nav_item_Settings">Einstellungen</string>
+    <string name="nav_header_desc">Navigation header</string>
+</resources>
