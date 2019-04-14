@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="729dp"
         android:layout_marginTop="2dp"
-        android:text="@string/hello_blank_fragment"
+        android:text="Overview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
