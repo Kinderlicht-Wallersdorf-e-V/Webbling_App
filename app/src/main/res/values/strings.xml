@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Webbling_Test</string>
+    <string name="title_activity_start">StartActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Kinderlicht e.V.</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_item_Overview">Overview</string>
+    <string name="nav_item_Birthdays">Birthdays</string>
+    <string name="nav_item_ToDo">ToDo List</string>
+    <string name="nav_item_Newsletter">Newsletter</string>
+    <string name="nav_item_Settings">Settings</string>
 </resources>
