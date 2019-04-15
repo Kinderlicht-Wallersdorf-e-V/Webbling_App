@@ -1,4 +1,4 @@
-package com.example.webbling_test;
+package com.kinderlicht.ui;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,4 +1,4 @@
-package com.example.webbling_test;
+package com.kinderlicht.ui;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class testAsyncTask extends AsyncTask<URL, String, String> {
+public class WeblingReadTask extends AsyncTask<URL, String, String> {
     public Context con = null;
     @Override
     protected void onPostExecute(String o) {

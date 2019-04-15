@@ -1,4 +1,4 @@
-package com.example.json;
+package com.kinderlicht.json;
 
 import java.util.ArrayList;
 import java.util.Collections;
