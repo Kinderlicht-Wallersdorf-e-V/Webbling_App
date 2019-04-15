@@ -1,4 +1,4 @@
-package com.example.webbling_test;
+package com.kinderlicht.ui;
 
 import org.junit.Test;
 

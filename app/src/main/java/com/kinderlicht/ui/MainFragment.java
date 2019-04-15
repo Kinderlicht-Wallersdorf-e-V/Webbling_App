@@ -1,4 +1,4 @@
-package com.example.webbling_test;
+package com.kinderlicht.ui;
 
 import android.content.Context;
 import android.net.Uri;
@@ -16,11 +16,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.json.Member;
-import com.example.json.Parser;
+import com.kinderlicht.json.Member;
+import com.kinderlicht.json.Parser;
 
 import java.util.ArrayList;
-import java.util.logging.ConsoleHandler;
 
 
 /**

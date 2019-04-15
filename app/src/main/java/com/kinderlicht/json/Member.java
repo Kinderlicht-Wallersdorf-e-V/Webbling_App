@@ -1,9 +1,8 @@
-package com.example.json;
+package com.kinderlicht.json;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 
 public class Member {
 
