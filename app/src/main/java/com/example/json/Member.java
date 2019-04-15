@@ -3,17 +3,20 @@ package com.example.json;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 
 public class Member {
 
     private String name;
     private String email;
     private LocalDate birthday;
+    private int age;
 
     public Member(String name, String email, String birthday) {
         setName(name);
         setEmail(email);
         setBirthday(birthday);
+        setAge((int)ChronoUnit.YEARS.between(this.birthday, LocalDate.now()));
     }
 
     public String getName() {
@@ -45,6 +48,10 @@ public class Member {
         }
     }
 
+    public int getAgeOnNextBirthday(){
+        return age + 1;
+    }
+
     public long daysToNextBirthday() {
         String formatted = String.format("%04d-%02d-%02d", LocalDate.now().getYear(), birthday.getMonthValue(),
                 birthday.getDayOfMonth());
@@ -65,4 +72,11 @@ public class Member {
         return name + " hat am " + birthday + " Geburtstag. Email an: " + email + "";
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 }

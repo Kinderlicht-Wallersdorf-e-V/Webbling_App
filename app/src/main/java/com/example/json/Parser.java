@@ -38,4 +38,25 @@ public class Parser {
         Collections.sort(user, birthday);
         return user;
     }
+    
+    public static ArrayList<Member> getTopNnextBirthdays(int n, ArrayList<Member> list){
+        ArrayList<Member> members = new ArrayList<>();
+        for(Member mem: list){
+            if(members.size() < n){
+                boolean hasBirthday = false;
+                for(Member in: members) {
+                    if (in.getBirthday().equals(mem.getBirthday())){
+                        hasBirthday = true;
+                        break;
+                    }
+                }
+                if(!hasBirthday){
+                    members.add(mem);
+                }
+            } else {
+                break;
+            }
+        }
+        return members;
+    }
 }
