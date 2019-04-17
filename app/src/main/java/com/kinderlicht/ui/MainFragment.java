@@ -1,8 +1,12 @@
 package com.kinderlicht.ui;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +22,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kinderlicht.json.Member;
 import com.kinderlicht.json.Parser;
+import com.kinderlicht.sql.Connector;
+import com.kinderlicht.sql.DatabaseContract;
 
 import java.util.ArrayList;
 
@@ -85,29 +91,77 @@ public class MainFragment extends Fragment {
         b_001.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
-                String url = "https://kinderlichtwdorf.webling.eu/api/1/member?format=full&apikey=eaab12f49595f7d8ca8a938cf0d082ec";
-
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        String output = response.toString();
-                        System.out.println(output);
-                        ArrayList<Member> list = Parser.createMembers(output);
-                        System.out.println(list.size());
-                        Toast.makeText(getActivity().getApplicationContext(), list.get(0).getName() , Toast.LENGTH_LONG).show();
-
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity().getApplicationContext(), "Hasn't worked", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-                queue.add(stringRequest);
+               database();
             }
         });
+    }
+
+    public void database(){
+        //Create database
+        Connector dbHelper = new Connector(getContext());
+
+        // Gets the data repository in write mode
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.DatabaseEntry.COLUMN_NAME, "Johann Fritz");
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(DatabaseContract.DatabaseEntry.TABLE_NAME, null, values);
+
+
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                BaseColumns._ID,
+                DatabaseContract.DatabaseEntry.COLUMN_NAME
+        };
+
+        // Filter results WHERE "title" = 'My Title'
+        String selection = DatabaseContract.DatabaseEntry.COLUMN_NAME + " = ?";
+        String[] selectionArgs = { "My Title" };
+
+        // How you want the results sorted in the resulting Cursor
+        String sortOrder =
+                DatabaseContract.DatabaseEntry.COLUMN_NAME + " DESC";
+
+        Cursor cursor = db.query(
+                DatabaseContract.DatabaseEntry.TABLE_NAME,   // The table to query
+                projection,             // The array of columns to return (pass null to get all)
+                selection,              // The columns for the WHERE clause
+                selectionArgs,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                sortOrder               // The sort order
+        );
+
+        String out = cursor.getString(cursor.getColumnIndex(DatabaseContract.DatabaseEntry.COLUMN_NAME));
+        Toast.makeText(getContext(), out, Toast.LENGTH_LONG).show();
+    }
+
+    public void weblingRequest(){
+        RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        String url = "https://kinderlichtwdorf.webling.eu/api/1/member?format=full&apikey=eaab12f49595f7d8ca8a938cf0d082ec";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String output = response.toString();
+                System.out.println(output);
+                ArrayList<Member> list = Parser.createMembers(output);
+                System.out.println(list.size());
+                Toast.makeText(getActivity().getApplicationContext(), list.get(0).getName() , Toast.LENGTH_LONG).show();
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity().getApplicationContext(), "Hasn't worked", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        queue.add(stringRequest);
     }
 
     @Override
