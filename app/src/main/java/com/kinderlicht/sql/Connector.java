@@ -18,10 +18,15 @@ public class Connector extends SQLiteOpenHelper {
 
     public Connector(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        System.out.println("Hellooooooooo");
+
     }
+
     public void onCreate(SQLiteDatabase db) {
+        System.out.println("Hellooooooooo");
         db.execSQL(SQL_CREATE_ENTRIES);
     }
+
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
