@@ -1,8 +1,12 @@
 package com.kinderlicht.ui;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +22,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kinderlicht.json.Member;
 import com.kinderlicht.json.Parser;
+import com.kinderlicht.sql.Connector;
+import com.kinderlicht.sql.DatabaseContract;
 
 import java.util.ArrayList;
 
@@ -39,6 +45,8 @@ public class MainFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private Connector connector;
 
     private OnFragmentInteractionListener mListener;
 
@@ -67,15 +75,12 @@ public class MainFragment extends Fragment {
     Button b_001;
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+        connector = new Connector(getContext());
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
-
 
     }
 
@@ -85,29 +90,43 @@ public class MainFragment extends Fragment {
         b_001.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
-                String url = "https://kinderlichtwdorf.webling.eu/api/1/member?format=full&apikey=eaab12f49595f7d8ca8a938cf0d082ec";
-
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        String output = response.toString();
-                        System.out.println(output);
-                        ArrayList<Member> list = Parser.createMembers(output);
-                        System.out.println(list.size());
-                        Toast.makeText(getActivity().getApplicationContext(), list.get(0).getName() , Toast.LENGTH_LONG).show();
-
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity().getApplicationContext(), "Hasn't worked", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-                queue.add(stringRequest);
+               database();
             }
         });
+    }
+
+    public void database(){
+        connector.addData("Hans");
+        Cursor c = connector.getData();
+        if(c.getCount() >= 1) {
+            while (c.moveToNext()) {
+                Toast.makeText(getContext(), c.getString(1), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public void weblingRequest(){
+        RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        String url = "https://kinderlichtwdorf.webling.eu/api/1/member?format=full&apikey=eaab12f49595f7d8ca8a938cf0d082ec";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String output = response.toString();
+                System.out.println(output);
+                ArrayList<Member> list = Parser.createMembers(output);
+                System.out.println(list.size());
+                Toast.makeText(getActivity().getApplicationContext(), list.get(0).getName() , Toast.LENGTH_LONG).show();
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity().getApplicationContext(), "Hasn't worked", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        queue.add(stringRequest);
     }
 
     @Override
