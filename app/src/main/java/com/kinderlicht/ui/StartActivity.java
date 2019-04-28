@@ -24,7 +24,7 @@ import android.view.MenuItem;
 public class StartActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         MainFragment.OnFragmentInteractionListener, BirthdayFragment.OnFragmentInteractionListener,
-        TodoFragment.OnFragmentInteractionListener, NewsletterFragment.OnFragmentInteractionListener{
+        TodoFragment.OnFragmentInteractionListener, NewsletterFragment.OnFragmentInteractionListener, DonationFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,14 +155,15 @@ public class StartActivity extends AppCompatActivity
             fragmentClass = MainFragment.class;
         } else if (id == R.id.nav_Birthdays) {
             fragmentClass = BirthdayFragment.class;
-
         } else if (id == R.id.nav_ToDo) {
             fragmentClass = TodoFragment.class;
         } else if (id == R.id.nav_Newsletter) {
             fragmentClass = NewsletterFragment.class;
         } else if (id == R.id.nav_Settings) {
             fragmentClass = MainFragment.class;
-        } else{
+        } else if (id == R.id.nav_Donations) {
+            fragmentClass = DonationFragment.class;
+        }else{
             fragmentClass = MainFragment.class;
         }
 

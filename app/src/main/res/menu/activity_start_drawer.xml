@@ -22,6 +22,10 @@
             android:id="@+id/nav_Newsletter"
             android:icon="@drawable/ic_menu_manage"
             android:title="@string/nav_item_Newsletter" />
+        <item
+            android:id="@+id/nav_Donations"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="Donations" />
     </group>
 
     <group
