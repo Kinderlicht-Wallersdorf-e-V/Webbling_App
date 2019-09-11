@@ -178,6 +178,8 @@ public class StartActivity extends AppCompatActivity
                 .addToBackStack("a")
                 .commit();
 
+        item.setChecked(true);
+        setTitle(item.getTitle());
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
