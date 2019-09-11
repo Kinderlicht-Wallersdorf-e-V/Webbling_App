@@ -10,9 +10,10 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="nav_item_Overview">Overview</string>
+    <string name="nav_item_Overview">Newsletter</string>
     <string name="nav_item_Birthdays">Birthdays</string>
-    <string name="nav_item_ToDo">ToDo List</string>
-    <string name="nav_item_Newsletter">Newsletter</string>
+    <string name="nav_item_ToDo">To-Do List</string>
+    <string name="nav_item_Newsletter">Notifications</string>
     <string name="nav_item_Settings">Settings</string>
+    <string name="nav_item_Donnations">Donnations</string>
 </resources>

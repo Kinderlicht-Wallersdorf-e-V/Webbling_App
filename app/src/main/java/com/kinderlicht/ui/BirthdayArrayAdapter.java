@@ -6,6 +6,7 @@ package com.kinderlicht.ui;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +41,10 @@ public class BirthdayArrayAdapter extends ArrayAdapter<String> {
         ageLine.setText("" + ages[position]);
 
         if(checkDate(ages[position])){
-            firstLine.setTextColor(Color.rgb(10, 0, 122));
-            rowView.setBackgroundColor(Color.rgb(255, 205, 36));
+
+            firstLine.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryText));
+            //rowView.setBackgroundColor(Color.rgb(255, 205, 36));
+            rowView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccentLight));
         }
 
         return rowView;

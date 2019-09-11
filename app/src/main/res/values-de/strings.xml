@@ -8,10 +8,11 @@
     <string name="nav_header_subtitle">TODO</string>
     <string name="action_settings">Einstellungen</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="nav_item_Overview">Übersicht</string>
+    <string name="nav_item_Overview">News</string>
     <string name="nav_item_Birthdays">Geburtstage</string>
     <string name="nav_item_ToDo">To-Do Liste</string>
     <string name="nav_item_Newsletter">Benachrichtigungen</string>
     <string name="nav_item_Settings">Einstellungen</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_item_Donnations">Spenden</string>
 </resources>

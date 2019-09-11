@@ -8,24 +8,24 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_Overview"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_public_black_24dp"
             android:title="@string/nav_item_Overview" />
         <item
             android:id="@+id/nav_Birthdays"
-            android:icon="@drawable/ic_baseline_insert_invitation_24px"
+            android:icon="@drawable/ic_cake_black_24dp"
             android:title="@string/nav_item_Birthdays" />
         <item
             android:id="@+id/nav_ToDo"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_playlist_add_check_black_24dp"
             android:title="@string/nav_item_ToDo" />
         <item
             android:id="@+id/nav_Newsletter"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_sms_failed_black_24dp"
             android:title="@string/nav_item_Newsletter" />
         <item
             android:id="@+id/nav_Donations"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="Donations" />
+            android:icon="@drawable/ic_monetization_on_black_24dp"
+            android:title="@string/nav_item_Donnations" />
     </group>
 
     <group
