@@ -1,5 +1,6 @@
 package com.kinderlicht.json;
 
+import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -36,6 +37,13 @@ public class Member {
 
     public LocalDate getBirthday() {
         return birthday;
+    }
+
+    public String getBirthdayString(){
+        String out = birthday.toString();
+        String[] date = out.split("-");
+        out = date[2] + "." + date[1] + "." + date[0];
+        return out;
     }
 
     public void setBirthday(String birthday) {
