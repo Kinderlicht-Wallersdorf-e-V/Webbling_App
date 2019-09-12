@@ -96,8 +96,10 @@ public class MainFragment extends Fragment {
         b_001.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               database();
+               //database();
                 //weblingRequest();
+
+                ((StartActivity) getActivity()).triggerNotification();
             }
         });
     }
