@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -54,10 +55,15 @@ public class StartActivity extends AppCompatActivity
 
 
         try{
+            Menu menuNav = navigationView.getMenu();
+            MenuItem menuItem = menuNav.findItem(R.id.nav_Overview);
+
             FragmentManager fragMan = getSupportFragmentManager();
             fragMan.beginTransaction().replace(R.id.frag_lay, MainFragment.class.newInstance())
                     .addToBackStack("a")
                     .commit();
+            menuItem.setChecked(true);
+            setTitle(menuItem.getTitle());
         } catch(Exception e){
             e.printStackTrace();
         }
