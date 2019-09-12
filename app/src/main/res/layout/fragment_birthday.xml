@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,9 +8,80 @@
 
     <!-- TODO: Update blank fragment layout -->
 
+    <TextView
+        android:id="@+id/tv_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="6dp"
+        android:gravity="center_vertical"
+        android:text="@string/tv_spinner"
+        android:textColor="@color/colorPrimaryText"
+        android:textSize="18sp"
+        tools:layout_alignBaseline="@id/spinner_months" />
+
+    <Spinner
+        android:id="@+id/spinner_months"
+        android:layout_width="128dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginBottom="6dp"
+        android:dropDownWidth="match_parent"
+        tools:layout_alignParentRight="true" />
+
+    <TextView
+        android:id="@+id/tV_Search"
+        android:layout_width="154dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/divider"
+        android:layout_below="@id/tv_spinner"
+        android:layout_alignBaseline="@id/eT_Search"
+        android:layout_alignStart="@id/tv_spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="22dp"
+        android:text="@string/tV_search"
+        android:textColor="@color/colorPrimaryText"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/eT_Search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spinner_months"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="64dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginBottom="6dp"
+        android:layout_toRightOf="@id/tV_Search"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/eT_Search"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:background="?android:attr/listDivider" />
+
     <ListView
         android:id="@+id/lv_birthday"
         android:layout_width="match_parent"
-        android:layout_height="622dp" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/divider">
 
-</LinearLayout>
+    </ListView>
+
+</RelativeLayout>

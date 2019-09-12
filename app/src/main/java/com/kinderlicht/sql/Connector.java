@@ -9,11 +9,13 @@ import android.util.Log;
 
 import com.kinderlicht.json.Member;
 
+import java.util.ArrayList;
+
 public class Connector extends SQLiteOpenHelper {
 
     private static final String TAG = "Connector";
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "temp_data_database";
 
     private static final String TABLE_MEMBERS = "member";
@@ -22,6 +24,7 @@ public class Connector extends SQLiteOpenHelper {
     private static final String COL_MEMBERS_FNAME = "f_name";
     private static final String COL_MEMBERS_SNAME = "s_name";
     private static final String COL_MEMBERS_BIRTHDAY = "birthday";
+    private static final String COL_MEMBERS_EMAIL = "email";
     private static final String COL_MEMBERS_AGE = "age";
 
 
@@ -30,6 +33,7 @@ public class Connector extends SQLiteOpenHelper {
             COL_MEMBERS_WEBLID + " INTEGER UNIQUE, " +
             COL_MEMBERS_FNAME + " TEXT, " +
             COL_MEMBERS_SNAME + " TEXT, " +
+            COL_MEMBERS_EMAIL + " TEXT, " +
             COL_MEMBERS_BIRTHDAY + " DATETIME" + ")";
 
     public Connector(Context context) {
@@ -43,7 +47,7 @@ public class Connector extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("DROP TABLE IF EXISTS " + "people_table");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBERS);
         onCreate(db);
     }
 
@@ -60,6 +64,7 @@ public class Connector extends SQLiteOpenHelper {
         contentValues.put(COL_MEMBERS_WEBLID, member.getWebl_id());
         contentValues.put(COL_MEMBERS_FNAME, member.getF_name());
         contentValues.put(COL_MEMBERS_SNAME, member.getS_name());
+        contentValues.put(COL_MEMBERS_EMAIL, member.getEmail());
         contentValues.put(COL_MEMBERS_BIRTHDAY, member.getBirthday().toString());
 
         Log.d(TAG, "addData: Adding " + member.toString() + " to " + TABLE_MEMBERS);
@@ -90,6 +95,44 @@ public class Connector extends SQLiteOpenHelper {
         String query = "SELECT COUNT(" + COL_MEMBERS_ID + ") FROM " + TABLE_MEMBERS;
         Cursor data = db.rawQuery(query, null);
         return data;
+    }
+
+    public ArrayList<Member> getBirthdayList(int months){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " +
+                COL_MEMBERS_WEBLID + ", " +
+                COL_MEMBERS_ID + ", " +
+                COL_MEMBERS_FNAME + ", " +
+                COL_MEMBERS_SNAME + ", " +
+                COL_MEMBERS_EMAIL + ", " +
+                COL_MEMBERS_BIRTHDAY + ", " +
+                "CASE WHEN " + "strftime('%m', 'now') - strftime('%m', "+ COL_MEMBERS_BIRTHDAY +") < 0 " +
+                "THEN " +
+                "date(strftime('%Y', 'now')||strftime('-%m-%d', " + COL_MEMBERS_BIRTHDAY + ")) " +
+                "ELSE " +
+                "date(strftime('%Y', 'now', '+1 years')||strftime('-%m-%d', " + COL_MEMBERS_BIRTHDAY + ")) " +
+                "END AS next_birthday " +
+                "FROM " + TABLE_MEMBERS + " " +
+                "WHERE next_birthday BETWEEN date('now') AND date('now', '+" + months +" month') " +
+                "ORDER BY next_birthday ASC";
+        System.out.println(query);
+        Cursor data = db.rawQuery(query, null);
+
+        ArrayList<Member> list = new ArrayList<Member>();
+
+        if(data.getCount() >= 1){
+            while(data.moveToNext()){
+                list.add(new Member(
+                        data.getInt(data.getColumnIndex(COL_MEMBERS_WEBLID)),
+                        data.getString(data.getColumnIndex(COL_MEMBERS_FNAME)),
+                        data.getString(data.getColumnIndex(COL_MEMBERS_SNAME)),
+                        data.getString(data.getColumnIndex(COL_MEMBERS_EMAIL)),
+                        data.getString(data.getColumnIndex(COL_MEMBERS_BIRTHDAY))
+                ));
+            }
+        }
+
+        return list;
     }
 
     /**

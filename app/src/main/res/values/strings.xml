@@ -16,4 +16,6 @@
     <string name="nav_item_Newsletter">Notifications</string>
     <string name="nav_item_Settings">Settings</string>
     <string name="nav_item_Donnations">Donnations</string>
+    <string name="tv_spinner">Select Months:</string>
+    <string name="tV_search">Search for Name:</string>
 </resources>

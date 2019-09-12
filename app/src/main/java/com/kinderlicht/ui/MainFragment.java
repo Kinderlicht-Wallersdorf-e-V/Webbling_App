@@ -76,19 +76,16 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        connector = new Connector(getContext());
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        weblingImportData();
-
     }
 
     @Override
     public void onStop() {
-        connector.triggerTempDelete();
         super.onStop();
 
     }
@@ -106,8 +103,8 @@ public class MainFragment extends Fragment {
     }
 
     public void database(){
-        connector.addMemberData(new Member(123, "Mustermann", "Max", "blubber@hansdampf.de", "1998-10-08"));
-        Cursor c = connector.getDataCount();
+        //connector.addMemberData(new Member(123, "Mustermann", "Max", "blubber@hansdampf.de", "1998-10-08"));
+        Cursor c = ((StartActivity) getActivity()).getConnector().getDataCount();
         if(c.getCount() >= 1) {
             while (c.moveToNext()) {
                 Toast.makeText(getContext(), c.getString(0), Toast.LENGTH_LONG).show();
@@ -139,39 +136,7 @@ public class MainFragment extends Fragment {
         queue.add(stringRequest);
     }
 
-    public void weblingImportData(){
-        RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
-        String url = "https://kinderlichtwdorf.webling.eu/api/1/member?format=full&apikey=eaab12f49595f7d8ca8a938cf0d082ec";
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                String output = response.toString();
-                System.out.println(output);
-                ArrayList<Member> list = Parser.createMembers(output);
-                System.out.println(list.size());
-                Toast.makeText(getActivity().getApplicationContext(), "Fetched" , Toast.LENGTH_SHORT).show();
-                for(Member mem: list){
-                    connector.addMemberData(mem);
-                }
-                Toast.makeText(getActivity().getApplicationContext(), "Imported" , Toast.LENGTH_SHORT).show();
-
-                Cursor c = connector.getDataCount();
-                if(c.getCount() >= 1) {
-                    while (c.moveToNext()) {
-                        Toast.makeText(getContext(), c.getString(0), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity().getApplicationContext(), "Hasn't worked", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        queue.add(stringRequest);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

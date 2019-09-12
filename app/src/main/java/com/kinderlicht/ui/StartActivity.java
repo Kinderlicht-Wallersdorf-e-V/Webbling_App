@@ -3,6 +3,7 @@ package com.kinderlicht.ui;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,11 +22,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.kinderlicht.json.Member;
+import com.kinderlicht.json.Parser;
+import com.kinderlicht.sql.Connector;
+
+import java.util.ArrayList;
 
 public class StartActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         MainFragment.OnFragmentInteractionListener, BirthdayFragment.OnFragmentInteractionListener,
         TodoFragment.OnFragmentInteractionListener, NewsletterFragment.OnFragmentInteractionListener, DonationFragment.OnFragmentInteractionListener{
+
+
+    private Connector connector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +92,28 @@ public class StartActivity extends AppCompatActivity
 
 
         init();
+        weblingImportData();
 
+    }
+
+    @Override
+    protected void onStop() {
+
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        connector.triggerTempDelete();
+
+        System.out.println("Entitys in db: " + connector.getData().getCount());
+        super.onDestroy();
     }
 
     private final int WRITE_REQUEST_CODE = 1;
@@ -192,7 +230,7 @@ public class StartActivity extends AppCompatActivity
     }
 
     private void init(){
-
+        connector = new Connector(this);
 
 
     }
@@ -200,5 +238,45 @@ public class StartActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    public Connector getConnector(){
+        return connector;
+    }
+
+
+
+    public void weblingImportData(){
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        String url = "https://kinderlichtwdorf.webling.eu/api/1/member?format=full&apikey=eaab12f49595f7d8ca8a938cf0d082ec";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String output = response.toString();
+                System.out.println(output);
+                ArrayList<Member> list = Parser.createMembers(output);
+                System.out.println(list.size());
+                Toast.makeText(getApplicationContext(), "Fetched" , Toast.LENGTH_SHORT).show();
+                for(Member mem: list){
+                    connector.addMemberData(mem);
+                }
+                Toast.makeText(getApplicationContext(), "Imported" , Toast.LENGTH_SHORT).show();
+
+                Cursor c = connector.getDataCount();
+                if(c.getCount() >= 1) {
+                    while (c.moveToNext()) {
+                        Toast.makeText(getApplicationContext(), c.getString(0), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "Hasn't worked", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        queue.add(stringRequest);
     }
 }

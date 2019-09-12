@@ -15,4 +15,6 @@
     <string name="nav_item_Settings">Einstellungen</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="nav_item_Donnations">Spenden</string>
+    <string name="tv_spinner">Monate auswählen:</string>
+    <string name="tV_search">Nach Namen suchen:</string>
 </resources>
