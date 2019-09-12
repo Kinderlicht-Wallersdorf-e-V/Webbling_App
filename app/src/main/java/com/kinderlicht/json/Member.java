@@ -7,24 +7,40 @@ import java.time.temporal.ChronoUnit;
 
 public class Member {
 
-    private String name;
+    private String f_name;
+    private String s_name;
     private String email;
     private LocalDate birthday;
     private int age;
+    private int webl_id;
 
-    public Member(String name, String email, String birthday) {
-        setName(name);
+    public Member(int webl_id, String f_name, String s_name, String email, String birthday) {
+        setWebl_id(webl_id);
+        setF_name(f_name);
+        setS_name(s_name);
         setEmail(email);
         setBirthday(birthday);
         setAge((int)ChronoUnit.YEARS.between(this.birthday, LocalDate.now()));
     }
 
-    public String getName() {
-        return name;
+    public String getName(){
+        return this.s_name + " " + this.f_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getF_name() {
+        return f_name;
+    }
+
+    public void setF_name(String name) {
+        this.f_name = name;
+    }
+
+    public void setS_name(String s_name){
+        this.s_name = s_name;
+    }
+
+    public String getS_name(){
+        return this.s_name;
     }
 
     public String getEmail() {
@@ -76,7 +92,7 @@ public class Member {
     }
 
     public String toString() {
-        return name + " hat am " + birthday + " Geburtstag. Email an: " + email + "";
+        return s_name + " " + f_name + " hat am " + birthday + " Geburtstag. Email an: " + email + "";
     }
 
     public int getAge() {
@@ -85,5 +101,15 @@ public class Member {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+
+
+    public void setWebl_id(int webl_id){
+        this.webl_id = webl_id;
+    }
+
+    public int getWebl_id(){
+        return this.webl_id;
     }
 }

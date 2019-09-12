@@ -7,40 +7,64 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.kinderlicht.json.Member;
+
 public class Connector extends SQLiteOpenHelper {
 
     private static final String TAG = "Connector";
 
-    private static final String TABLE_NAME = "people_table";
-    private static final String COL1 = "ID";
-    private static final String COL2 = "name";
+    private static final int DATABASE_VERSION = 2;
+    private static final String DATABASE_NAME = "temp_data_database";
 
+    private static final String TABLE_MEMBERS = "member";
+    private static final String COL_MEMBERS_ID = "ID";
+    private static final String COL_MEMBERS_WEBLID = "webl_id";
+    private static final String COL_MEMBERS_FNAME = "f_name";
+    private static final String COL_MEMBERS_SNAME = "s_name";
+    private static final String COL_MEMBERS_BIRTHDAY = "birthday";
+    private static final String COL_MEMBERS_AGE = "age";
+
+
+    private static final String CMD_CREATE_TABLE_MEMBERS = "CREATE TABLE " + TABLE_MEMBERS + "(" +
+            COL_MEMBERS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COL_MEMBERS_WEBLID + " INTEGER UNIQUE, " +
+            COL_MEMBERS_FNAME + " TEXT, " +
+            COL_MEMBERS_SNAME + " TEXT, " +
+            COL_MEMBERS_BIRTHDAY + " DATETIME" + ")";
 
     public Connector(Context context) {
-        super(context, TABLE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTable = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL2 +" TEXT)";
-        db.execSQL(createTable);
+        db.execSQL(CMD_CREATE_TABLE_MEMBERS);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + "people_table");
         onCreate(db);
     }
 
-    public boolean addData(String item) {
+    public void triggerTempDelete(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String statement = "DELETE FROM " + TABLE_MEMBERS + " WHERE " + COL_MEMBERS_ID + " > -1";
+        db.execSQL(statement);
+    }
+
+
+    public boolean addMemberData(Member member) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL2, item);
+        contentValues.put(COL_MEMBERS_WEBLID, member.getWebl_id());
+        contentValues.put(COL_MEMBERS_FNAME, member.getF_name());
+        contentValues.put(COL_MEMBERS_SNAME, member.getS_name());
+        contentValues.put(COL_MEMBERS_BIRTHDAY, member.getBirthday().toString());
 
-        Log.d(TAG, "addData: Adding " + item + " to " + TABLE_NAME);
+        Log.d(TAG, "addData: Adding " + member.toString() + " to " + TABLE_MEMBERS);
 
-        long result = db.insert(TABLE_NAME, null, contentValues);
+        long result = db.insert(TABLE_MEMBERS, null, contentValues);
 
         //if date as inserted incorrectly it will return -1
         if (result == -1) {
@@ -56,37 +80,44 @@ public class Connector extends SQLiteOpenHelper {
      */
     public Cursor getData(){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_NAME;
+        String query = "SELECT * FROM " + TABLE_MEMBERS;
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
+
+    public Cursor getDataCount(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT COUNT(" + COL_MEMBERS_ID + ") FROM " + TABLE_MEMBERS;
         Cursor data = db.rawQuery(query, null);
         return data;
     }
 
     /**
-     * Returns only the ID that matches the name passed in
-     * @param name
-     * @return
+     * Returns the member with the passed id
+     * @param id
+     * @return curser
      */
-    public Cursor getItemID(String name){
+    public Cursor getMember(int id){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + COL1 + " FROM " + TABLE_NAME +
-                " WHERE " + COL2 + " = '" + name + "'";
+        String query = "SELECT " + "*" + " FROM " + TABLE_MEMBERS +
+                " WHERE " + COL_MEMBERS_ID + " = " + id;
         Cursor data = db.rawQuery(query, null);
         return data;
     }
 
     /**
      * Updates the name field
-     * @param newName
+     * @param new_F_Name: new family name that should be set
+     * @param new_S_Name: new sur name that should be set
      * @param id
-     * @param oldName
      */
-    public void updateName(String newName, int id, String oldName){
+    public void updateName(String new_F_Name, String new_S_Name, int id){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + TABLE_NAME + " SET " + COL2 +
-                " = '" + newName + "' WHERE " + COL1 + " = '" + id + "'" +
-                " AND " + COL2 + " = '" + oldName + "'";
+        String query = "UPDATE " + TABLE_MEMBERS + " SET " + COL_MEMBERS_FNAME +
+                " = '" + new_F_Name + "', " + COL_MEMBERS_SNAME + " = '" + new_S_Name + "'" +
+                " WHERE " + COL_MEMBERS_ID + " = " + id + "";
         Log.d(TAG, "updateName: query: " + query);
-        Log.d(TAG, "updateName: Setting name to " + newName);
+        Log.d(TAG, "updateName: Setting f_name to " + new_F_Name + " s_name to " + new_S_Name);
         db.execSQL(query);
     }
 
@@ -97,9 +128,8 @@ public class Connector extends SQLiteOpenHelper {
      */
     public void deleteName(int id, String name){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "DELETE FROM " + TABLE_NAME + " WHERE "
-                + COL1 + " = '" + id + "'" +
-                " AND " + COL2 + " = '" + name + "'";
+        String query = "DELETE FROM " + TABLE_MEMBERS + " WHERE "
+                + COL_MEMBERS_ID + " = " + id + "";
         Log.d(TAG, "deleteName: query: " + query);
         Log.d(TAG, "deleteName: Deleting " + name + " from database.");
         db.execSQL(query);

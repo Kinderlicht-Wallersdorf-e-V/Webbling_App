@@ -22,7 +22,7 @@ public class Parser {
             for (int i = 0; i < jObject.length(); i++) {
                 JSONObject object = jObject.getJSONObject(i);
                 JSONObject properties = (JSONObject) object.get("properties");
-                user.add(new Member(properties.getString("Vorname") + " " + properties.getString("Name"), properties.getString("E-Mail"), properties.getString("Geburtstag")));
+                user.add(new Member(properties.getInt("Mitglieder ID"), properties.getString("Vorname"), properties.getString("Name"), properties.getString("E-Mail"), properties.getString("Geburtstag")));
             }
         } catch (Exception e) {
             e.printStackTrace();

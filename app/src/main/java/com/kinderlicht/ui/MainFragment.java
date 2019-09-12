@@ -82,6 +82,15 @@ public class MainFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        weblingImportData();
+
+    }
+
+    @Override
+    public void onStop() {
+        connector.triggerTempDelete();
+        super.onStop();
+
     }
 
     private void init(View view){
@@ -90,18 +99,18 @@ public class MainFragment extends Fragment {
         b_001.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               //database();
-                weblingRequest();
+               database();
+                //weblingRequest();
             }
         });
     }
 
     public void database(){
-        connector.addData("Hans");
-        Cursor c = connector.getData();
+        connector.addMemberData(new Member(123, "Mustermann", "Max", "blubber@hansdampf.de", "1998-10-08"));
+        Cursor c = connector.getDataCount();
         if(c.getCount() >= 1) {
             while (c.moveToNext()) {
-                Toast.makeText(getContext(), c.getString(1), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), c.getString(0), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -117,8 +126,42 @@ public class MainFragment extends Fragment {
                 System.out.println(output);
                 ArrayList<Member> list = Parser.createMembers(output);
                 System.out.println(list.size());
-                Toast.makeText(getActivity().getApplicationContext(), list.get(0).getName() , Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), list.get(0).getName() , Toast.LENGTH_SHORT).show();
 
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity().getApplicationContext(), "Hasn't worked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        queue.add(stringRequest);
+    }
+
+    public void weblingImportData(){
+        RequestQueue queue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        String url = "https://kinderlichtwdorf.webling.eu/api/1/member?format=full&apikey=eaab12f49595f7d8ca8a938cf0d082ec";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String output = response.toString();
+                System.out.println(output);
+                ArrayList<Member> list = Parser.createMembers(output);
+                System.out.println(list.size());
+                Toast.makeText(getActivity().getApplicationContext(), "Fetched" , Toast.LENGTH_SHORT).show();
+                for(Member mem: list){
+                    connector.addMemberData(mem);
+                }
+                Toast.makeText(getActivity().getApplicationContext(), "Imported" , Toast.LENGTH_SHORT).show();
+
+                Cursor c = connector.getDataCount();
+                if(c.getCount() >= 1) {
+                    while (c.moveToNext()) {
+                        Toast.makeText(getContext(), c.getString(0), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         }, new Response.ErrorListener() {
             @Override
