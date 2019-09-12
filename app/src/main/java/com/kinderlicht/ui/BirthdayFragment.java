@@ -1,7 +1,6 @@
 package com.kinderlicht.ui;
 
 import android.content.Context;
-import android.media.MediaMetadata;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,21 +10,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.kinderlicht.json.Member;
-import com.kinderlicht.json.Parser;
 import com.kinderlicht.sql.Connector;
 
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 /**
@@ -83,7 +77,7 @@ public class BirthdayFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-
+        calendar = Calendar.getInstance();
 
     }
 
@@ -158,37 +152,52 @@ public class BirthdayFragment extends Fragment {
 
 
     ListView birthday;
-    Spinner month_spinner;
+    SeekBar seekBar_months;
+
+    TextView tv_Months;
+
+    Calendar calendar;
     private void init(View view){
         System.out.println("init");
         birthday = (ListView) view.findViewById(R.id.lv_birthday);
-        month_spinner = (Spinner) view.findViewById(R.id.spinner_months);
+        seekBar_months = (SeekBar) view.findViewById(R.id.seekBar_month);
+        tv_Months = (TextView) view.findViewById(R.id.tV_month);
 
-        ArrayList<Integer> list = new ArrayList<>();
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        list.add(6);
-        list.add(12);
+        seekBar_months.setMax(12);
+        seekBar_months.setMin(1);
+        seekBar_months.setProgress(3, true);
 
-        ArrayAdapter<Integer> dataAdapter = new ArrayAdapter<Integer>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        month_spinner.setAdapter(dataAdapter);
 
-        month_spinner.setSelection(dataAdapter.getPosition(3));
 
-        month_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        String[] months = getResources().getStringArray(R.array.months);
+        int a_month = calendar.get(Calendar.MONTH);
+
+        tv_Months.setText(months[a_month] + " - " + months[(a_month + 3)%12]);
+
+        System.out.println("Month" + calendar.get(Calendar.MONTH));
+
+        seekBar_months.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                int months = (int) parent.getItemAtPosition(position);
-                fetchData(months);
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                fetchData(progress);
+                String[] months = getResources().getStringArray(R.array.months);
+                int a_month = calendar.get(Calendar.MONTH);
+
+                tv_Months.setText(months[a_month] + " - " + months[(a_month + progress)%12]);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
         });
+
+
         fetchData(3);
     }
 

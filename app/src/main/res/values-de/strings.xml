@@ -15,6 +15,21 @@
     <string name="nav_item_Settings">Einstellungen</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="nav_item_Donnations">Spenden</string>
-    <string name="tv_spinner">Monate auswählen:</string>
-    <string name="tV_search">Nach Namen suchen:</string>
+    <string name="tv_spinner">Monate:</string>
+    <string name="tV_search">Namen suchen:</string>
+
+    <string-array name="months">
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>Mär</item>
+        <item>Apr</item>
+        <item>Mai</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Aug</item>
+        <item>Sep</item>
+        <item>Okt</item>
+        <item>Nov</item>
+        <item>Dez</item>
+    </string-array>
 </resources>

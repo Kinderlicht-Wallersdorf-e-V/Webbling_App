@@ -113,7 +113,7 @@ public class Connector extends SQLiteOpenHelper {
                 "date(strftime('%Y', 'now', '+1 years')||strftime('-%m-%d', " + COL_MEMBERS_BIRTHDAY + ")) " +
                 "END AS next_birthday " +
                 "FROM " + TABLE_MEMBERS + " " +
-                "WHERE next_birthday BETWEEN date('now') AND date('now', '+" + months +" month') " +
+                "WHERE next_birthday BETWEEN date('now') AND date('now', '+" + (months + 1) +" month', 'start of month', '-1 day') " +
                 "ORDER BY next_birthday ASC";
         System.out.println(query);
         Cursor data = db.rawQuery(query, null);

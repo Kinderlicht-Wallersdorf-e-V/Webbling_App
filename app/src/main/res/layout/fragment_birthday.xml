@@ -21,19 +21,33 @@
         android:text="@string/tv_spinner"
         android:textColor="@color/colorPrimaryText"
         android:textSize="18sp"
-        tools:layout_alignBaseline="@id/spinner_months" />
+        tools:layout_alignBaseline="@id/seekBar_month" />
 
-    <Spinner
-        android:id="@+id/spinner_months"
+    <TextView
+        android:id="@+id/tV_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/tv_spinner"
+        android:layout_alignStart="@id/eT_Search"
+        android:layout_marginLeft="6dp"
+        android:layout_toEndOf="@+id/tv_spinner"
+        android:text="0"
+        android:textColor="@color/colorPrimaryText"
+        android:textSize="18sp" />
+
+    <SeekBar
+        android:id="@+id/seekBar_month"
         android:layout_width="128dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="false"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="6dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="6dp"
-        android:layout_marginRight="6dp"
         android:layout_marginBottom="6dp"
+        android:layout_toEndOf="@+id/tV_month"
         android:dropDownWidth="match_parent"
         tools:layout_alignParentRight="true" />
 
@@ -57,9 +71,10 @@
         android:id="@+id/eT_Search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/spinner_months"
+        android:layout_below="@id/seekBar_month"
         android:layout_alignParentRight="true"
-        android:layout_marginLeft="64dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="6dp"
         android:layout_marginRight="6dp"
         android:layout_marginBottom="6dp"
         android:layout_toRightOf="@id/tV_Search"
@@ -70,7 +85,7 @@
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:layout_below="@id/eT_Search"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
