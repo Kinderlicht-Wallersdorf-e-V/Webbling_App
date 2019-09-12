@@ -39,7 +39,7 @@
 
     <TextView
         android:id="@+id/tV_Search"
-        android:layout_width="154dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/divider"
         android:layout_below="@id/tv_spinner"
