@@ -87,9 +87,10 @@ public class TodoFragment extends Fragment {
 
         fab = ((StartActivity) getActivity()).getFab();
 
-        fab.show();
-        fab.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_add_black_24dp));
 
+        System.out.println("do update of drawable");
+        fab.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_add_black_24dp));
+        fab.show();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
