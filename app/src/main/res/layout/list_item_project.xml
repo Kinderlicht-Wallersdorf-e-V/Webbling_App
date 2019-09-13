@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/tv_projectListLable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/b_collapse"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="false"
+        android:layout_marginStart="6dp"
+        android:layout_marginLeft="6dp"
+        android:text="Test"
+        android:textColor="@color/colorPrimaryText"
+        android:textSize="24sp" />
+
+    <ImageButton
+        android:id="@+id/b_collapse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="6dp"
+
+        android:src="@drawable/ic_add_black_24dp"
+        tools:src="@drawable/ic_add_black_24dp" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:layout_below="@id/b_collapse"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginTop="6dp"/>
+
+    <ListView
+        android:id="@+id/lv_todoListProject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider2"
+        android:layout_alignParentBottom="false"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp" />
+</RelativeLayout>

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.kinderlicht.sql.table_objects.Project_Item;
 import com.kinderlicht.sql.table_objects.ToDoList_Item;
 
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public class TodoFragment extends Fragment {
 
 
         System.out.println("do update of drawable");
-        fab.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_add_black_24dp));
+        fab.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_add_white_24dp));
         fab.show();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,22 +100,41 @@ public class TodoFragment extends Fragment {
             }
         });
 
-        ArrayList<ToDoList_Item> list = new ArrayList<>();
+        ArrayList<ToDoList_Item> list_p1 = new ArrayList<>();
 
-        list.add(new ToDoList_Item(0, false, "This is a test ToDo-List entry"));
-        list.add(new ToDoList_Item(1, false, "This is a test ToDo-List entry"));
-        list.add(new ToDoList_Item(2, false, "This is a test ToDo-List entry"));
-        list.add(new ToDoList_Item(3, false, "This is a test ToDo-List entry"));
+        list_p1.add(new ToDoList_Item(0, false, "This is a test ToDo-List entry in Project 1"));
+        list_p1.add(new ToDoList_Item(1, false, "This is a test ToDo-List entry in Project 1"));
+        list_p1.add(new ToDoList_Item(2, false, "This is a test ToDo-List entry in Project 1"));
+        list_p1.add(new ToDoList_Item(3, false, "This is a test ToDo-List entry in Project 1"));
+
+        ArrayList<ToDoList_Item> list_p2 = new ArrayList<>();
+
+        list_p2.add(new ToDoList_Item(0, false, "This is a test ToDo-List entry in Project 2"));
+        list_p2.add(new ToDoList_Item(1, false, "This is a test ToDo-List entry in Project 2"));
+        list_p2.add(new ToDoList_Item(2, false, "This is a test ToDo-List entry in Project 2"));
+        list_p2.add(new ToDoList_Item(3, false, "This is a test ToDo-List entry in Project 2"));
 
 
-        ToDoList_Item[] items = new ToDoList_Item[list.size()];
+        ToDoList_Item[] items_p1 = new ToDoList_Item[list_p1.size()];
 
-        for(int i = 0; i < list.size(); i++){
-            items[i] = list.get(i);
+        for(int i = 0; i < list_p1.size(); i++){
+            items_p1[i] = list_p1.get(i);
 
         }
 
-        TodoListArrayAdapter adapter = new TodoListArrayAdapter(getActivity().getApplicationContext(), items);
+        ToDoList_Item[] items_p2 = new ToDoList_Item[list_p2.size()];
+
+        for(int i = 0; i < list_p2.size(); i++){
+            items_p2[i] = list_p2.get(i);
+
+        }
+
+        Project_Item[] projects = new Project_Item[2];
+        projects[0] = new Project_Item("Project 1", items_p1);
+        projects[1] = new Project_Item("Project 2", items_p2);
+
+        //TodoListArrayAdapter adapter = new TodoListArrayAdapter(getActivity().getApplicationContext(), items);
+        ProjectArrayAdapter adapter = new ProjectArrayAdapter(getActivity().getApplicationContext(), projects);
         lv_Todo.setAdapter(adapter);
 
     }
