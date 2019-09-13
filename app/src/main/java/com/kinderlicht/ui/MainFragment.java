@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +49,8 @@ public class MainFragment extends Fragment {
     private String mParam2;
 
     private Connector connector;
+
+    private FloatingActionButton fab;
 
     private OnFragmentInteractionListener mListener;
 
@@ -102,6 +106,18 @@ public class MainFragment extends Fragment {
                 ((StartActivity) getActivity()).triggerNotification();
             }
         });
+
+        fab = ((StartActivity) getActivity()).getFab();
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "If you are sseing this, I've done something wrong", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        fab.hide();
     }
 
     public void database(){

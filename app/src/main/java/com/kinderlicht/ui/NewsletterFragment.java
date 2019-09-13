@@ -3,6 +3,8 @@ package com.kinderlicht.ui;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,8 @@ public class NewsletterFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private FloatingActionButton fab;
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,7 +68,20 @@ public class NewsletterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_newsletter, container, false);
+        View view = inflater.inflate(R.layout.fragment_newsletter, container, false);
+        init(view);
+        return view;
+    }
+
+    private void init(View view) {
+        fab = ((StartActivity) getActivity()).getFab();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "If you are sseing this, I've done something wrong", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event

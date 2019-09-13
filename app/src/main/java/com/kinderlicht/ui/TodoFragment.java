@@ -3,10 +3,18 @@ package com.kinderlicht.ui;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
+import com.kinderlicht.sql.table_objects.ToDoList_Item;
+
+import java.util.ArrayList;
 
 
 /**
@@ -28,6 +36,11 @@ public class TodoFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private ListView lv_Todo;
+
+    private FloatingActionButton fab;
+
 
     public TodoFragment() {
         // Required empty public constructor
@@ -64,7 +77,45 @@ public class TodoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_todo, container, false);
+        View view = inflater.inflate(R.layout.fragment_todo, container, false);
+        init(view);
+        return view;
+    }
+
+    private void init(View view){
+        lv_Todo = (ListView) view.findViewById(R.id.lv_todo);
+
+        fab = ((StartActivity) getActivity()).getFab();
+
+        fab.show();
+        fab.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.ic_add_black_24dp));
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "I successfully captured the ActionButton", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        ArrayList<ToDoList_Item> list = new ArrayList<>();
+
+        list.add(new ToDoList_Item(0, false, "This is a test ToDo-List entry"));
+        list.add(new ToDoList_Item(1, false, "This is a test ToDo-List entry"));
+        list.add(new ToDoList_Item(2, false, "This is a test ToDo-List entry"));
+        list.add(new ToDoList_Item(3, false, "This is a test ToDo-List entry"));
+
+
+        ToDoList_Item[] items = new ToDoList_Item[list.size()];
+
+        for(int i = 0; i < list.size(); i++){
+            items[i] = list.get(i);
+
+        }
+
+        TodoListArrayAdapter adapter = new TodoListArrayAdapter(getActivity().getApplicationContext(), items);
+        lv_Todo.setAdapter(adapter);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -105,4 +156,8 @@ public class TodoFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
 }
+
+
