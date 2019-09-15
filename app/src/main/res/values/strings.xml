@@ -33,4 +33,6 @@
         <item>Nov</item>
         <item>Dec</item>
     </string-array>
+    <string name="iB_ContentDescription">Button for etending the listView of the ToDos</string>
+    <string name="b_Button_Standard">Button</string>
 </resources>

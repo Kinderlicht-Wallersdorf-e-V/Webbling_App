@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="160dp"
         android:layout_marginTop="244dp"
-        android:text="Button"
+        android:text="@string/b_Button_Standard"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_001" />
 

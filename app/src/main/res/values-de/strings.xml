@@ -32,4 +32,6 @@
         <item>Nov</item>
         <item>Dez</item>
     </string-array>
+    <string name="iB_ContentDescription">TRANSLATION MISSING</string>
+    <string name="b_Button_Standard">Button</string>
 </resources>

@@ -203,7 +203,6 @@ public class BirthdayFragment extends Fragment {
 
     public void fetchData(int months) {
         System.out.println("fetchData");
-        Toast.makeText(getActivity().getApplicationContext(), "Hey dickhead, Im doing something", Toast.LENGTH_LONG);
         ArrayList<Member> list = connector.getBirthdayList(months);
 
         String[] names = new String[list.size()];
@@ -223,7 +222,7 @@ public class BirthdayFragment extends Fragment {
         birthday.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity().getApplicationContext(), birthday.getAdapter().getItem(position).toString(), Toast.LENGTH_LONG);
+                Toast.makeText(getActivity().getApplicationContext(), birthday.getAdapter().getItem(position).toString(), Toast.LENGTH_LONG).show();
             }
         });
     }

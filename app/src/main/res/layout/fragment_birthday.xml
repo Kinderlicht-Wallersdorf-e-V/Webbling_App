@@ -80,7 +80,7 @@
         android:layout_toRightOf="@id/tV_Search"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name" />
+        android:hint="Name"/>
 
     <View
         android:id="@+id/divider"

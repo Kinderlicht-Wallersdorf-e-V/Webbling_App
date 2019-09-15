@@ -15,7 +15,7 @@ public class WeblingReadTask extends AsyncTask<URL, String, String> {
     protected void onPostExecute(String o) {
         super.onPostExecute(o);
         System.out.println("Out " + o);
-        Toast.makeText(con, o, Toast.LENGTH_LONG);
+        //Toast.makeText(con, o, Toast.LENGTH_LONG);
     }
 
 

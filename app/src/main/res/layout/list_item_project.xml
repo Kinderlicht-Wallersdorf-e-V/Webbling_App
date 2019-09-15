@@ -11,7 +11,7 @@
         android:id="@+id/b_collapse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:contentDescription="@string/iB_ContentDescription"
         android:layout_marginTop="8dp"
         android:layout_marginRight="8dp"
         android:background="@color/colorSecondaryText"
