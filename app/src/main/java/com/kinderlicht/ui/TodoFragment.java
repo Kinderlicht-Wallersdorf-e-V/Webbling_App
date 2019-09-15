@@ -87,7 +87,7 @@ public class TodoFragment extends Fragment {
         return view;
     }
 
-    private void init(View view){
+    private void init(View view) {
         //lv_Todo = (ListView) view.findViewById(R.id.lv_todo);
 
         lv_Todo = (RecyclerView) view.findViewById(R.id.lv_todo);
@@ -126,14 +126,14 @@ public class TodoFragment extends Fragment {
 
         ToDoList_Item[] items_p1 = new ToDoList_Item[list_p1.size()];
 
-        for(int i = 0; i < list_p1.size(); i++){
+        for (int i = 0; i < list_p1.size(); i++) {
             items_p1[i] = list_p1.get(i);
 
         }
 
         ToDoList_Item[] items_p2 = new ToDoList_Item[list_p2.size()];
 
-        for(int i = 0; i < list_p2.size(); i++){
+        for (int i = 0; i < list_p2.size(); i++) {
             items_p2[i] = list_p2.get(i);
 
         }
@@ -170,6 +170,7 @@ public class TodoFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+
     }
 
     /**
@@ -186,7 +187,6 @@ public class TodoFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
 
 }
 

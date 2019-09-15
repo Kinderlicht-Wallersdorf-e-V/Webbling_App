@@ -20,10 +20,10 @@ public class Member {
         setS_name(s_name);
         setEmail(email);
         setBirthday(birthday);
-        setAge((int)ChronoUnit.YEARS.between(this.birthday, LocalDate.now()));
+        setAge((int) ChronoUnit.YEARS.between(this.birthday, LocalDate.now()));
     }
 
-    public String getName(){
+    public String getName() {
         return this.s_name + " " + this.f_name;
     }
 
@@ -35,11 +35,11 @@ public class Member {
         this.f_name = name;
     }
 
-    public void setS_name(String s_name){
+    public void setS_name(String s_name) {
         this.s_name = s_name;
     }
 
-    public String getS_name(){
+    public String getS_name() {
         return this.s_name;
     }
 
@@ -55,7 +55,7 @@ public class Member {
         return birthday;
     }
 
-    public String getBirthdayString(){
+    public String getBirthdayString() {
         String out = birthday.toString();
         String[] date = out.split("-");
         out = date[2] + "." + date[1] + "." + date[0];
@@ -71,7 +71,7 @@ public class Member {
         }
     }
 
-    public int getAgeOnNextBirthday(){
+    public int getAgeOnNextBirthday() {
         return age + 1;
     }
 
@@ -104,12 +104,11 @@ public class Member {
     }
 
 
-
-    public void setWebl_id(int webl_id){
+    public void setWebl_id(int webl_id) {
         this.webl_id = webl_id;
     }
 
-    public int getWebl_id(){
+    public int getWebl_id() {
         return this.webl_id;
     }
 }

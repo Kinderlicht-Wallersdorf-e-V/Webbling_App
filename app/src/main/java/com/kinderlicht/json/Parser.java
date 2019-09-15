@@ -12,6 +12,7 @@ public class Parser {
 
     /**
      * Takes a json string and returns a list of members sorted by upcoming birthdays
+     *
      * @param json Json string
      * @return list of users sorted by days to next birthday
      */
@@ -31,26 +32,26 @@ public class Parser {
         Comparator<Member> birthday = new Comparator<Member>() {
             @Override
             public int compare(Member member, Member t1) {
-                return (int)(member.daysToNextBirthday() - t1.daysToNextBirthday());
+                return (int) (member.daysToNextBirthday() - t1.daysToNextBirthday());
             }
         };
 
         Collections.sort(user, birthday);
         return user;
     }
-    
-    public static ArrayList<Member> getTopNnextBirthdays(int n, ArrayList<Member> list){
+
+    public static ArrayList<Member> getTopNnextBirthdays(int n, ArrayList<Member> list) {
         ArrayList<Member> members = new ArrayList<>();
-        for(Member mem: list){
-            if(members.size() < n){
+        for (Member mem : list) {
+            if (members.size() < n) {
                 boolean hasBirthday = false;
-                for(Member in: members) {
-                    if (in.getBirthday().equals(mem.getBirthday())){
+                for (Member in : members) {
+                    if (in.getBirthday().equals(mem.getBirthday())) {
                         hasBirthday = true;
                         break;
                     }
                 }
-                if(!hasBirthday){
+                if (!hasBirthday) {
                     members.add(mem);
                 }
             } else {

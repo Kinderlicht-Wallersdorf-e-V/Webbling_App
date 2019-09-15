@@ -51,7 +51,7 @@ public class Connector extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void triggerTempDelete(){
+    public void triggerTempDelete() {
         SQLiteDatabase db = this.getWritableDatabase();
         String statement = "DELETE FROM " + TABLE_MEMBERS + " WHERE " + COL_MEMBERS_ID + " > -1";
         db.execSQL(statement);
@@ -81,23 +81,24 @@ public class Connector extends SQLiteOpenHelper {
 
     /**
      * Returns all the data from database
+     *
      * @return
      */
-    public Cursor getData(){
+    public Cursor getData() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_MEMBERS;
         Cursor data = db.rawQuery(query, null);
         return data;
     }
 
-    public Cursor getDataCount(){
+    public Cursor getDataCount() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT COUNT(" + COL_MEMBERS_ID + ") FROM " + TABLE_MEMBERS;
         Cursor data = db.rawQuery(query, null);
         return data;
     }
 
-    public ArrayList<Member> getBirthdayList(int months){
+    public ArrayList<Member> getBirthdayList(int months) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " +
                 COL_MEMBERS_WEBLID + ", " +
@@ -106,22 +107,22 @@ public class Connector extends SQLiteOpenHelper {
                 COL_MEMBERS_SNAME + ", " +
                 COL_MEMBERS_EMAIL + ", " +
                 COL_MEMBERS_BIRTHDAY + ", " +
-                "CASE WHEN " + "strftime('%m', 'now') - strftime('%m', "+ COL_MEMBERS_BIRTHDAY +") < 0 " +
+                "CASE WHEN " + "strftime('%m', 'now') - strftime('%m', " + COL_MEMBERS_BIRTHDAY + ") < 0 " +
                 "THEN " +
                 "date(strftime('%Y', 'now')||strftime('-%m-%d', " + COL_MEMBERS_BIRTHDAY + ")) " +
                 "ELSE " +
                 "date(strftime('%Y', 'now', '+1 years')||strftime('-%m-%d', " + COL_MEMBERS_BIRTHDAY + ")) " +
                 "END AS next_birthday " +
                 "FROM " + TABLE_MEMBERS + " " +
-                "WHERE next_birthday BETWEEN date('now') AND date('now', '+" + (months + 1) +" month', 'start of month', '-1 day') " +
+                "WHERE next_birthday BETWEEN date('now') AND date('now', '+" + (months + 1) + " month', 'start of month', '-1 day') " +
                 "ORDER BY next_birthday ASC";
         System.out.println(query);
         Cursor data = db.rawQuery(query, null);
 
         ArrayList<Member> list = new ArrayList<Member>();
 
-        if(data.getCount() >= 1){
-            while(data.moveToNext()){
+        if (data.getCount() >= 1) {
+            while (data.moveToNext()) {
                 list.add(new Member(
                         data.getInt(data.getColumnIndex(COL_MEMBERS_WEBLID)),
                         data.getString(data.getColumnIndex(COL_MEMBERS_FNAME)),
@@ -137,10 +138,11 @@ public class Connector extends SQLiteOpenHelper {
 
     /**
      * Returns the member with the passed id
+     *
      * @param id
      * @return curser
      */
-    public Cursor getMember(int id){
+    public Cursor getMember(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " + "*" + " FROM " + TABLE_MEMBERS +
                 " WHERE " + COL_MEMBERS_ID + " = " + id;
@@ -150,11 +152,12 @@ public class Connector extends SQLiteOpenHelper {
 
     /**
      * Updates the name field
+     *
      * @param new_F_Name: new family name that should be set
      * @param new_S_Name: new sur name that should be set
      * @param id
      */
-    public void updateName(String new_F_Name, String new_S_Name, int id){
+    public void updateName(String new_F_Name, String new_S_Name, int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + TABLE_MEMBERS + " SET " + COL_MEMBERS_FNAME +
                 " = '" + new_F_Name + "', " + COL_MEMBERS_SNAME + " = '" + new_S_Name + "'" +
@@ -166,10 +169,11 @@ public class Connector extends SQLiteOpenHelper {
 
     /**
      * Delete from database
+     *
      * @param id
      * @param name
      */
-    public void deleteName(int id, String name){
+    public void deleteName(int id, String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "DELETE FROM " + TABLE_MEMBERS + " WHERE "
                 + COL_MEMBERS_ID + " = " + id + "";

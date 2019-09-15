@@ -4,7 +4,8 @@ import android.provider.BaseColumns;
 
 public class DatabaseContract {
 
-    private DatabaseContract(){}
+    private DatabaseContract() {
+    }
 
     public static class DatabaseEntry implements BaseColumns {
         public static final String TABLE_NAME = "kinderlicht";
