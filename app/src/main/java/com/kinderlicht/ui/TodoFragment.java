@@ -7,6 +7,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +40,9 @@ public class TodoFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private ListView lv_Todo;
+    //private ListView lv_Todo;
+    private RecyclerView lv_Todo;
+    private RecyclerView.LayoutManager layoutManager;
 
     private FloatingActionButton fab;
 
@@ -84,7 +88,12 @@ public class TodoFragment extends Fragment {
     }
 
     private void init(View view){
-        lv_Todo = (ListView) view.findViewById(R.id.lv_todo);
+        //lv_Todo = (ListView) view.findViewById(R.id.lv_todo);
+
+        lv_Todo = (RecyclerView) view.findViewById(R.id.lv_todo);
+        lv_Todo.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        lv_Todo.setLayoutManager(layoutManager);
 
         fab = ((StartActivity) getActivity()).getFab();
 

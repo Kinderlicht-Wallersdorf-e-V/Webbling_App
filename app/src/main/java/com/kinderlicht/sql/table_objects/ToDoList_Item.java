@@ -4,7 +4,7 @@ public class ToDoList_Item {
 
     private int id;
     private boolean checked;
-    private String labe;
+    private String label;
 
 
     public ToDoList_Item(){
@@ -13,10 +13,10 @@ public class ToDoList_Item {
 
 
     //There are parameters missing like assigned to
-    public ToDoList_Item(int id, boolean cheched, String lable){
+    public ToDoList_Item(int id, boolean cheched, String lablel){
         this.id = id;
         this.checked = cheched;
-        this.labe = lable;
+        this.label = lablel;
     }
 
     public int getId() {
@@ -35,11 +35,15 @@ public class ToDoList_Item {
         this.checked = checked;
     }
 
-    public String getLabe() {
-        return labe;
+    public void setChecked(){
+        this.checked = !this.checked;
     }
 
-    public void setLabe(String labe) {
-        this.labe = labe;
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

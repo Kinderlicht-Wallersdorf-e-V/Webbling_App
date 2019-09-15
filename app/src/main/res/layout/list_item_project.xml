@@ -1,49 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout2"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-
-    <TextView
-        android:id="@+id/tv_projectListLable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/b_collapse"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="false"
-        android:layout_marginStart="6dp"
-        android:layout_marginLeft="6dp"
-        android:text="Test"
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="24sp" />
 
     <ImageButton
         android:id="@+id/b_collapse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="6dp"
 
-        android:src="@drawable/ic_add_black_24dp"
-        tools:src="@drawable/ic_add_black_24dp" />
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@color/colorSecondaryText"
+        android:src="@drawable/ic_expand_more_primcol_24dp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_projectListLable"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_expand_more_primcol_24dp" />
+
+    <TextView
+        android:id="@+id/tv_projectListLable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Test"
+        android:textColor="@color/colorPrimaryText"
+        android:textSize="24sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/divider2"
+        android:id="@+id/di_todoItems"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="8dp"
         android:background="?android:attr/listDivider"
-        android:layout_below="@id/b_collapse"
-        android:layout_marginStart="6dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginTop="6dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_projectListLable" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/lv_todoListProject"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/divider2"
-        android:layout_alignParentBottom="false"
         android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp" />
-</RelativeLayout>
+        android:layout_marginTop="8dp"
+        android:scrollbars="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/di_todoItems" >
+
+    </android.support.v7.widget.RecyclerView>
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintTop_toBottomOf="@id/lv_todoListProject"
+        tools:layout_editor_absoluteX="12dp" />
+</android.support.constraint.ConstraintLayout>
