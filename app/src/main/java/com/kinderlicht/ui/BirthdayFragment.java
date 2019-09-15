@@ -157,7 +157,8 @@ public class BirthdayFragment extends Fragment {
     TextView tv_Months;
 
     Calendar calendar;
-    private void init(View view){
+
+    private void init(View view) {
         System.out.println("init");
         birthday = (ListView) view.findViewById(R.id.lv_birthday);
         seekBar_months = (SeekBar) view.findViewById(R.id.seekBar_month);
@@ -168,11 +169,10 @@ public class BirthdayFragment extends Fragment {
         seekBar_months.setProgress(3, true);
 
 
-
         String[] months = getResources().getStringArray(R.array.months);
         int a_month = calendar.get(Calendar.MONTH);
 
-        tv_Months.setText(months[a_month] + " - " + months[(a_month + 3)%12]);
+        tv_Months.setText(months[a_month] + " - " + months[(a_month + 3) % 12]);
 
         System.out.println("Month" + calendar.get(Calendar.MONTH));
 
@@ -183,7 +183,7 @@ public class BirthdayFragment extends Fragment {
                 String[] months = getResources().getStringArray(R.array.months);
                 int a_month = calendar.get(Calendar.MONTH);
 
-                tv_Months.setText(months[a_month] + " - " + months[(a_month + progress)%12]);
+                tv_Months.setText(months[a_month] + " - " + months[(a_month + progress) % 12]);
             }
 
             @Override
@@ -201,7 +201,7 @@ public class BirthdayFragment extends Fragment {
         fetchData(3);
     }
 
-    public void fetchData(int months){
+    public void fetchData(int months) {
         System.out.println("fetchData");
         Toast.makeText(getActivity().getApplicationContext(), "Hey dickhead, Im doing something", Toast.LENGTH_LONG);
         ArrayList<Member> list = connector.getBirthdayList(months);
@@ -211,7 +211,7 @@ public class BirthdayFragment extends Fragment {
         int[] ageOnNextBirthday = new int[list.size()];
 
 
-        for (int i = 0; i < list.size(); i++){
+        for (int i = 0; i < list.size(); i++) {
             names[i] = list.get(i).getName();
             birthdays[i] = list.get(i).getBirthdayString();
             ageOnNextBirthday[i] = list.get(i).getAgeOnNextBirthday();

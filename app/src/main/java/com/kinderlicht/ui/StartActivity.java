@@ -46,7 +46,7 @@ import java.util.ArrayList;
 public class StartActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         MainFragment.OnFragmentInteractionListener, BirthdayFragment.OnFragmentInteractionListener,
-        TodoFragment.OnFragmentInteractionListener, NewsletterFragment.OnFragmentInteractionListener, DonationFragment.OnFragmentInteractionListener{
+        TodoFragment.OnFragmentInteractionListener, NewsletterFragment.OnFragmentInteractionListener, DonationFragment.OnFragmentInteractionListener {
 
 
     private Connector connector;
@@ -78,8 +78,7 @@ public class StartActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-
-        try{
+        try {
             Menu menuNav = navigationView.getMenu();
             MenuItem menuItem = menuNav.findItem(R.id.nav_Overview);
 
@@ -89,7 +88,7 @@ public class StartActivity extends AppCompatActivity
                     .commit();
             menuItem.setChecked(true);
             setTitle(menuItem.getTitle());
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -125,16 +124,16 @@ public class StartActivity extends AppCompatActivity
     }
 
     private final int WRITE_REQUEST_CODE = 1;
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case WRITE_REQUEST_CODE:
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //Permission granted.
                     //Continue with writing files...
-                }
-                else{
+                } else {
                     //Permission denied.
                 }
                 break;
@@ -215,13 +214,13 @@ public class StartActivity extends AppCompatActivity
             fragmentClass = MainFragment.class;
         } else if (id == R.id.nav_Donations) {
             fragmentClass = DonationFragment.class;
-        }else{
+        } else {
             fragmentClass = MainFragment.class;
         }
 
-        try{
+        try {
             frag = (Fragment) fragmentClass.newInstance();
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -237,7 +236,7 @@ public class StartActivity extends AppCompatActivity
         return true;
     }
 
-    private void init(){
+    private void init() {
         connector = new Connector(this);
 
 
@@ -248,13 +247,12 @@ public class StartActivity extends AppCompatActivity
 
     }
 
-    public Connector getConnector(){
+    public Connector getConnector() {
         return connector;
     }
 
 
-
-    public void weblingImportData(){
+    public void weblingImportData() {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         String url = "https://kinderlichtwdorf.webling.eu/api/1/member?format=full&apikey=eaab12f49595f7d8ca8a938cf0d082ec";
 
@@ -265,14 +263,14 @@ public class StartActivity extends AppCompatActivity
                 System.out.println(output);
                 ArrayList<Member> list = Parser.createMembers(output);
                 System.out.println(list.size());
-                Toast.makeText(getApplicationContext(), "Fetched" , Toast.LENGTH_SHORT).show();
-                for(Member mem: list){
+                Toast.makeText(getApplicationContext(), "Fetched", Toast.LENGTH_SHORT).show();
+                for (Member mem : list) {
                     connector.addMemberData(mem);
                 }
-                Toast.makeText(getApplicationContext(), "Imported" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Imported", Toast.LENGTH_SHORT).show();
 
                 Cursor c = connector.getDataCount();
-                if(c.getCount() >= 1) {
+                if (c.getCount() >= 1) {
                     while (c.moveToNext()) {
                         Toast.makeText(getApplicationContext(), c.getString(0), Toast.LENGTH_SHORT).show();
                     }
@@ -290,7 +288,7 @@ public class StartActivity extends AppCompatActivity
 
     private static final String CHANNEL_ID = "1";
 
-    public void triggerNotification(){
+    public void triggerNotification() {
         Intent intent = new Intent(this, StartActivity.class);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
@@ -308,7 +306,7 @@ public class StartActivity extends AppCompatActivity
         notificationManager.notify(11, builder.build());
     }
 
-    private void createNotificationChannel(){
+    private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Test";
             String description = "This is only a test channel";
@@ -322,7 +320,7 @@ public class StartActivity extends AppCompatActivity
         }
     }
 
-    public FloatingActionButton getFab(){
+    public FloatingActionButton getFab() {
         return fab;
     }
 }

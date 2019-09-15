@@ -19,7 +19,7 @@ public class BirthdayArrayAdapter extends ArrayAdapter<String> {
     private final String[] birthdays;
     private final int[] ages;
 
-    public BirthdayArrayAdapter(Context context, String[] names, String[] birthdays, int[] ages){
+    public BirthdayArrayAdapter(Context context, String[] names, String[] birthdays, int[] ages) {
         super(context, -1, names);
         this.context = context;
         this.names = names;
@@ -29,7 +29,7 @@ public class BirthdayArrayAdapter extends ArrayAdapter<String> {
     }
 
     @Override
-    public View getView(int position, View covertView, ViewGroup parent){
+    public View getView(int position, View covertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.list_item_1, parent, false);
         TextView firstLine = (TextView) rowView.findViewById(R.id.firstLine);
@@ -40,7 +40,7 @@ public class BirthdayArrayAdapter extends ArrayAdapter<String> {
         secoundLine.setText(birthdays[position]);
         ageLine.setText("" + ages[position]);
 
-        if(checkDate(ages[position])){
+        if (checkDate(ages[position])) {
 
             firstLine.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryText));
             //rowView.setBackgroundColor(Color.rgb(255, 205, 36));
@@ -50,16 +50,16 @@ public class BirthdayArrayAdapter extends ArrayAdapter<String> {
         return rowView;
     }
 
-    private boolean checkDate(int age){
+    private boolean checkDate(int age) {
         int[] special = {18, 19, 21};
-        if(age % 10 == 0){
+        if (age % 10 == 0) {
             return true;
         }
-        if(age % 11 == 0){
+        if (age % 11 == 0) {
             return true;
         }
-        for(int a: special){
-            if(age == a){
+        for (int a : special) {
+            if (age == a) {
                 return true;
             }
         }
