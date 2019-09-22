@@ -105,7 +105,8 @@ public class MainFragment extends Fragment {
 
                 ((StartActivity) getActivity()).triggerNotification();
                 //((StartActivity) getActivity()).switchTheme();
-                ((StartActivity) getActivity()).switchTheme();
+                //((StartActivity) getActivity()).switchTheme();
+                ((StartActivity) getActivity()).goTo(R.id.nav_Birthdays);
 
             }
         });

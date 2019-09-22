@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -151,22 +153,26 @@ public class BirthdayFragment extends Fragment {
     }
 
 
-    ListView birthday;
+    RecyclerView birthday;
     SeekBar seekBar_months;
-
+    RecyclerView.LayoutManager layoutManager;
     TextView tv_Months;
 
     Calendar calendar;
 
     private void init(View view) {
         System.out.println("init");
-        birthday = (ListView) view.findViewById(R.id.lv_birthday);
+        birthday = (RecyclerView) view.findViewById(R.id.lv_birthday);
+        layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        birthday.setLayoutManager(layoutManager);
+
         seekBar_months = (SeekBar) view.findViewById(R.id.seekBar_month);
         tv_Months = (TextView) view.findViewById(R.id.tV_month);
 
         seekBar_months.setMax(12);
         seekBar_months.setMin(1);
         seekBar_months.setProgress(3, true);
+
 
 
         String[] months = getResources().getStringArray(R.array.months);
@@ -219,11 +225,6 @@ public class BirthdayFragment extends Fragment {
 
         birthday.setAdapter(adapter);
 
-        birthday.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity().getApplicationContext(), birthday.getAdapter().getItem(position).toString(), Toast.LENGTH_LONG).show();
-            }
-        });
+
     }
 }

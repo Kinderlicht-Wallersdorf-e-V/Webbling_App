@@ -72,18 +72,19 @@ public class SettingsFragment extends Fragment {
         Switch sw_theme = (Switch) view.findViewById(R.id.sw_theme);
 
 
-        final SharedPreferences sharedPreferences = getActivity().getPreferences(getActivity().MODE_PRIVATE);
+        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getString(R.string.settings_file_name), getActivity().MODE_PRIVATE);
 
-        int theme = sharedPreferences.getInt("Theme", 0);
+        int theme = sharedPreferences.getInt(getString(R.string.settings_key_theme), 0);
         boolean checked = (theme != 0);
         sw_theme.setChecked(checked);
         sw_theme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt("Theme", isChecked ? 1: 0);
+                editor.putInt(getString(R.string.settings_key_theme), isChecked ? 1: 0);
                 editor.commit();
                 getActivity().recreate();
+                ((StartActivity) getActivity()).goTo(R.id.nav_Birthdays);
             }
         });
         return view;

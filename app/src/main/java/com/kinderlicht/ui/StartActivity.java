@@ -59,9 +59,9 @@ public class StartActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences sharedPreferences  = this.getPreferences(this.MODE_PRIVATE);
+        SharedPreferences sharedPreferences  = this.getSharedPreferences(getString(R.string.settings_file_name) , this.MODE_PRIVATE);
         //Util.onActivityCreateSetTheme(this);
-        int theme =  sharedPreferences.getInt("Theme", 0); // R.style.AppTheme_RED
+        int theme =  sharedPreferences.getInt(getString(R.string.settings_key_theme), 0); // R.style.AppTheme_RED
         System.out.println(theme);
         switch (theme){
             case 0:
@@ -103,6 +103,7 @@ public class StartActivity extends AppCompatActivity
             fragMan.beginTransaction().replace(R.id.frag_lay, MainFragment.class.newInstance())
                     .addToBackStack("a")
                     .commit();
+            System.out.println("Blubber");
             menuItem.setChecked(true);
             setTitle(menuItem.getTitle());
         } catch (Exception e) {
@@ -118,6 +119,50 @@ public class StartActivity extends AppCompatActivity
         init();
         weblingImportData();
         createNotificationChannel();
+    }
+
+    public void goTo(int id_R){
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        Menu menuNav = navigationView.getMenu();
+        MenuItem menuItem = menuNav.findItem(id_R);
+
+        Fragment frag = null;
+        Class fragmentClass;
+        int id = menuItem.getItemId();
+
+        if (id == R.id.nav_Overview) {
+            // Handle the camera action
+            fragmentClass = MainFragment.class;
+        } else if (id == R.id.nav_Birthdays) {
+            fragmentClass = BirthdayFragment.class;
+        } else if (id == R.id.nav_ToDo) {
+            fragmentClass = TodoFragment.class;
+        } else if (id == R.id.nav_Newsletter) {
+            fragmentClass = NewsletterFragment.class;
+        } else if (id == R.id.nav_Settings) {
+            fragmentClass = SettingsFragment.class;
+        } else if (id == R.id.nav_Donations) {
+            fragmentClass = DonationFragment.class;
+        }  else {
+            fragmentClass = MainFragment.class;
+        }
+
+        try {
+            frag = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        FragmentManager fragMan = getSupportFragmentManager();
+        fragMan.beginTransaction().replace(R.id.frag_lay, frag)
+                .addToBackStack("a")
+                .commit();
+
+        menuItem.setChecked(true);
+        setTitle(menuItem.getTitle());
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
     }
 
     @Override
@@ -215,6 +260,8 @@ public class StartActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
+
         Fragment frag = null;
         Class fragmentClass;
         int id = item.getItemId();
@@ -326,9 +373,9 @@ public class StartActivity extends AppCompatActivity
 
     public void switchTheme(){
         //Util.changeToTheme(StartActivity.this, 1);
-        SharedPreferences sharedPreferences = this.getPreferences(this.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(getString(R.string.settings_file_name), this.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("Theme", 1);
+        editor.putInt(getString(R.string.settings_key_theme), 1);
         editor.commit();
         this.recreate();
     }

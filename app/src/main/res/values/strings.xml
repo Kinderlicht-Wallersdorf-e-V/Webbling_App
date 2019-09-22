@@ -37,4 +37,6 @@
         <item>Nov</item>
         <item>Dec</item>
     </string-array>
+    <string name="settings_key_theme">theme</string>
+    <string name="settings_file_name">settings</string>
 </resources>
