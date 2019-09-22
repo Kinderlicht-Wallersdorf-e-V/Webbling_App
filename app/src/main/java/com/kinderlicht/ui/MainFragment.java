@@ -104,8 +104,13 @@ public class MainFragment extends Fragment {
                 //weblingRequest();
 
                 ((StartActivity) getActivity()).triggerNotification();
+                //((StartActivity) getActivity()).switchTheme();
+                ((StartActivity) getActivity()).switchTheme();
+
             }
         });
+
+
 
         fab = ((StartActivity) getActivity()).getFab();
 

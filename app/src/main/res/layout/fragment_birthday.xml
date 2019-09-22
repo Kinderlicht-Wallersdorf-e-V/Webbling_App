@@ -19,7 +19,6 @@
         android:layout_marginRight="6dp"
         android:gravity="center_vertical"
         android:text="@string/tv_spinner"
-        android:textColor="@color/colorPrimaryText"
         android:textSize="18sp"
         tools:layout_alignBaseline="@id/seekBar_month" />
 
@@ -32,7 +31,6 @@
         android:layout_marginLeft="6dp"
         android:layout_toEndOf="@+id/tv_spinner"
         android:text="0"
-        android:textColor="@color/colorPrimaryText"
         android:textSize="18sp" />
 
     <SeekBar
@@ -64,7 +62,6 @@
         android:layout_marginTop="6dp"
         android:layout_marginBottom="22dp"
         android:text="@string/tV_search"
-        android:textColor="@color/colorPrimaryText"
         android:textSize="18sp" />
 
     <EditText

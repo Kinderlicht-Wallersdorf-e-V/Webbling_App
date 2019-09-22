@@ -14,7 +14,7 @@
         android:layout_alignParentRight="true"
         android:gravity="center_vertical"
         android:text="Example application"
-        android:textColor="@color/colorPrimaryText"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textSize="22sp"
         android:textStyle="bold" />
 

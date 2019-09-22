@@ -34,4 +34,6 @@
     </string-array>
     <string name="iB_ContentDescription">TRANSLATION MISSING</string>
     <string name="b_Button_Standard">Button</string>
+    <string name="title_activity_settings">Einstellungen</string>
+    <string name="sw_theme">Dunklen Modus Einschalten</string>
 </resources>

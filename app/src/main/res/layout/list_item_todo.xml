@@ -11,8 +11,7 @@
         android:layout_marginLeft="6dp"
         android:layout_marginTop="6dp"
         android:layout_marginRight="6dp"
-        android:layout_marginBottom="6dp"
-        android:theme="@style/AppTheme" />
+        android:layout_marginBottom="6dp" />
 
     <TextView
         android:id="@+id/tv_todoLabel"
@@ -27,6 +26,5 @@
         android:layout_toLeftOf="@id/cB_todoList"
         android:layout_toEndOf="@+id/cB_todoList"
         android:text="Test"
-        android:textColor="@color/colorPrimaryText"
         android:textSize="18sp" />
 </RelativeLayout>

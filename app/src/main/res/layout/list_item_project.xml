@@ -11,15 +11,15 @@
         android:id="@+id/b_collapse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/iB_ContentDescription"
         android:layout_marginTop="8dp"
         android:layout_marginRight="8dp"
-        android:background="@color/colorSecondaryText"
+        android:contentDescription="@string/iB_ContentDescription"
         android:src="@drawable/ic_expand_more_primcol_24dp"
         app:layout_constraintBottom_toBottomOf="@id/tv_projectListLable"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_expand_more_primcol_24dp" />
+        tools:src="@drawable/ic_expand_more_primcol_24dp"
+        android:background="?backgroundColor"/>
 
     <TextView
         android:id="@+id/tv_projectListLable"
@@ -28,7 +28,6 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:text="Test"
-        android:textColor="@color/colorPrimaryText"
         android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
