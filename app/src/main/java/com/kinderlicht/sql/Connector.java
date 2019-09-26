@@ -98,7 +98,7 @@ public class Connector extends SQLiteOpenHelper {
         return data;
     }
 
-    public ArrayList<Member> getBirthdayList(int months) {
+    public ArrayList<Member> getBirthdayList(int months, String filter) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " +
                 COL_MEMBERS_WEBLID + ", " +
@@ -115,6 +115,7 @@ public class Connector extends SQLiteOpenHelper {
                 "END AS next_birthday " +
                 "FROM " + TABLE_MEMBERS + " " +
                 "WHERE next_birthday BETWEEN date('now') AND date('now', '+" + (months + 1) + " month', 'start of month', '-1 day') " +
+                "AND " + COL_MEMBERS_SNAME + " || " + COL_MEMBERS_FNAME + " LIKE '%" + filter + "%' " +
                 "ORDER BY next_birthday ASC";
         System.out.println(query);
         Cursor data = db.rawQuery(query, null);

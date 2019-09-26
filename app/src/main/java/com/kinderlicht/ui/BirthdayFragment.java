@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -157,21 +160,25 @@ public class BirthdayFragment extends Fragment {
     SeekBar seekBar_months;
     RecyclerView.LayoutManager layoutManager;
     TextView tv_Months;
+    EditText eT_NameFilter;
 
     Calendar calendar;
 
     private void init(View view) {
-        System.out.println("init");
+        //System.out.println("init");
         birthday = (RecyclerView) view.findViewById(R.id.lv_birthday);
-        layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        birthday.setLayoutManager(layoutManager);
-
         seekBar_months = (SeekBar) view.findViewById(R.id.seekBar_month);
         tv_Months = (TextView) view.findViewById(R.id.tV_month);
+        eT_NameFilter = (EditText) view.findViewById(R.id.eT_Search);
+
+        layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        birthday.setLayoutManager(layoutManager);
 
         seekBar_months.setMax(12);
         seekBar_months.setMin(1);
         seekBar_months.setProgress(3, true);
+
+
 
 
 
@@ -180,12 +187,12 @@ public class BirthdayFragment extends Fragment {
 
         tv_Months.setText(months[a_month] + " - " + months[(a_month + 3) % 12]);
 
-        System.out.println("Month" + calendar.get(Calendar.MONTH));
+        //System.out.println("Month" + calendar.get(Calendar.MONTH));
 
         seekBar_months.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                fetchData(progress);
+                fetchData(progress, eT_NameFilter.getText().toString());
                 String[] months = getResources().getStringArray(R.array.months);
                 int a_month = calendar.get(Calendar.MONTH);
 
@@ -203,13 +210,31 @@ public class BirthdayFragment extends Fragment {
             }
         });
 
+        eT_NameFilter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        fetchData(3);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Toast.makeText(getContext(), "Noew the text is changed", Toast.LENGTH_SHORT).show();
+                fetchData(seekBar_months.getProgress(), eT_NameFilter.getText().toString());
+            }
+        });
+
+
+        fetchData(3, "");
     }
 
-    public void fetchData(int months) {
+    public void fetchData(int months, String filter) {
         System.out.println("fetchData");
-        ArrayList<Member> list = connector.getBirthdayList(months);
+        ArrayList<Member> list = connector.getBirthdayList(months, filter);
 
         String[] names = new String[list.size()];
         String[] birthdays = new String[list.size()];
