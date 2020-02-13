@@ -13,6 +13,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.kinderlicht.webserver.Client;
+import com.kinderlicht.webserver.User;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Hello World");
                 try{
 
-                    test();
+                    test2();
 
                 } catch(Exception e){
                     System.out.println("Error" + e);
@@ -67,5 +69,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         queue.add(stringRequest);
+    }
+
+    private void test2() throws Exception{
+        Client.establishConnection(new User("mat@ket", "iamroot", "", 0), "SELECT * FROM user");
     }
 }
