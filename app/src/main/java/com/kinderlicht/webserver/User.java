@@ -61,6 +61,6 @@ public class User {
 			argument = password;
 		}
 		SendMessage sm = new SendMessage(code, getToken(), publicKey, getName(), argument);
-		Client.establishConnection(this, sm);
+		//Client.establishConnection(this, sm);
 	}
 }

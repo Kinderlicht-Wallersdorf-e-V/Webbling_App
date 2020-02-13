@@ -19,7 +19,8 @@ public class Client {
 
 	// code,token,key,username,message
 
-	public static ReceiveMessage establishConnection(User user, SendMessage toSend) {
+	public static ReceiveMessage establishConnection(User user, String send) {
+		SendMessage toSend = new SendMessage(10, user.getToken(), user.getServerKey(), user.getName(), send);
 		ReceiveMessage received = new ReceiveMessage("-1,null,null");
 		try {
 			String host = "kinderlicht.ddns.net";
@@ -154,11 +155,6 @@ public class Client {
 		}
 
 		return dataString.replace(endingsequence, "");
-	}
-
-	public static void main(String[] args) {
-		getTable(establishConnection(new User("mat@kat.de", "iamroot", "", 0),
-				new SendMessage(10, "", key, "mat@kat.de", "SELECT * FROM pro_user")).getArgument());
 	}
 
 	public static void getTable(String sql) {
