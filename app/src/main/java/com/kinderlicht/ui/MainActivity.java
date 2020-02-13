@@ -14,7 +14,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kinderlicht.webserver.Client;
-import com.kinderlicht.webserver.User;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,6 +71,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void test2() throws Exception{
-        Client.establishConnection(new User("mat@ket", "iamroot", "", 0), "SELECT * FROM user");
+
     }
 }

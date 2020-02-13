@@ -20,7 +20,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -42,7 +41,7 @@ import com.android.volley.toolbox.Volley;
 import com.kinderlicht.json.Member;
 import com.kinderlicht.json.Parser;
 import com.kinderlicht.sql.Connector;
-import com.kinderlicht.ui.Util;
+import com.kinderlicht.webserver.ClientTask;
 
 import java.util.ArrayList;
 
@@ -250,6 +249,7 @@ public class StartActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            new ClientTask().execute("SELECT * FROM user");
             return true;
         }
 

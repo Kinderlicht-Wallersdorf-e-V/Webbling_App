@@ -41,12 +41,30 @@ public class ResultSet {
 		pointer++;
 	}
 	
+	public String[] getLabels() {
+		String[] messed = labels.keySet().toArray(new String[] {});
+		String[] sorted = new String[messed.length];
+		
+		for(String s: messed) {
+			sorted[labels.get(s)] = s;
+		}
+		return sorted;
+	}
+	
 	public String get(int label) {
 		return rows.get(pointer)[label];
 	}
 	
 	public String get(String label) {
 		return get(labels.get(label));
+	}
+	
+	public int getInt(String label) {
+		return Integer.parseInt(get(label));
+	}
+	
+	public int getInt(int label) {
+		return Integer.parseInt(get(label));
 	}
 	
 	public String[] getRow(int row) {
@@ -59,6 +77,10 @@ public class ResultSet {
 
 	public int getLabelCount() {
 		return labelCount;
+	}
+	
+	public int rowCount() {
+		return length;
 	}
 
 

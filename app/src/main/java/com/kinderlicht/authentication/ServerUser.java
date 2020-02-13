@@ -1,33 +1,20 @@
-package de.kettl.webserver;
+package com.kinderlicht.authentication;
 
-public class User {
+import com.kinderlicht.webserver.Client;
 
-	private String username;
-	private String password;
+public class ServerUser extends User{
+
 	private String token;
 	private String serverKey;
 	private int permission;
 	
-	public User() {
-		
-	}
-	
-	public User(String username, String password, String token, int permission) {
-		this.username = username;
-		this.password = password;
+	public ServerUser(String username, String password, String token, int permission) {
+		super(username, password);
 		this.token = token;
 		this.permission = permission;
 		serverKey = "";
 	}
 	
-	public String getName() {
-		return username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
 	public int getPermission() {
 		return permission;
 	}
@@ -55,5 +42,11 @@ public class User {
 	public boolean hasKey() {
 		return !serverKey.equals("");
 	}
-
+	
+	public String sendMessage(int code, String argument) {
+		if(argument.equals("pw")) {
+			argument = getPassword();
+		}
+		return Client.establishConnection(code, getToken(), argument);
+	}
 }

@@ -1,12 +1,13 @@
 package com.kinderlicht.webserver;
 
-import javax.crypto.*;
-import javax.crypto.spec.SecretKeySpec;
-import javax.crypto.spec.IvParameterSpec;
-import java.util.Base64;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Random;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class AES {
 
@@ -14,12 +15,12 @@ public class AES {
     public static String encrypt(String key, String plaintext) {
         try {
             // Generate a random 16-byte initialization vector
-            byte[] initVector = new byte[16];
+            byte initVector[] = new byte[16];
             (new Random()).nextBytes(initVector);
             IvParameterSpec iv = new IvParameterSpec(initVector);
 
             // prep the key
-            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(Charset.defaultCharset()), "AES");
 
             // prep the AES Cipher
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
@@ -52,7 +53,7 @@ public class AES {
             byte[] messagebytes = Arrays.copyOfRange(cipherbytes,16,cipherbytes.length);
 
             IvParameterSpec iv = new IvParameterSpec(initVector);
-            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(Charset.defaultCharset()), "AES");
 
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
@@ -62,7 +63,7 @@ public class AES {
             byte[] byte_array = cipher.doFinal(messagebytes);
 
             // Return plaintext as String
-            return new String(byte_array, StandardCharsets.UTF_8);
+            return new String(byte_array, Charset.defaultCharset());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -77,24 +78,6 @@ public class AES {
     		key += text.charAt((int)(Math.random()*text.length()));
     	}
     	return key;
-    }
-
-    public static void main(String[] args) {
-    	System.out.println(decrypt("Sixteen byte key", "S79mNrPcza6RjBm0rxYi6E+9MqSFp0MBGboFgF718vM="));
-//        boolean encrypt = args[0].equals("encrypt"); // encrypt | decrypt
-//
-//        String key = args[1];
-//        String message = args[2]; // either plaintext or encrypted
-//
-//        if (encrypt)
-//        {
-//            System.out.println(encrypt(key, message));
-//        }
-//        else
-//        {
-//            System.out.println(decrypt(key, message));
-//        }
-//        //String originalString = "The quick brown fox jumps over the lâzy dতg";
     }
 
 }

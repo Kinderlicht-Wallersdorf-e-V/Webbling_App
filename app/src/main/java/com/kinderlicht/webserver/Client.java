@@ -1,5 +1,10 @@
 package com.kinderlicht.webserver;
 
+import android.util.Log;
+
+import com.kinderlicht.authentication.LoginManager;
+import com.kinderlicht.authentication.ServerUser;
+
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -13,14 +18,23 @@ import java.util.stream.Collectors;
 
 public class Client {
 
+	public static LoginManager loginManager = new LoginManager();
 	private static Socket socket;
 	private static final String endingsequence = "<<<endingsequence>>>";
 	private static final String key = RSA.getPublicKey()[0] + "/" + RSA.getPublicKey()[1];
 
 	// code,token,key,username,message
+	
+	public static String establishConnection(int code, String token, String argument) {
+		SendMessage toSend = new SendMessage(code, token, key, (ServerUser)loginManager.getUser("Server"), argument);
+		return establishConnection(toSend);
+	}
 
-	public static ReceiveMessage establishConnection(User user, String send) {
-		SendMessage toSend = new SendMessage(10, user.getToken(), user.getServerKey(), user.getName(), send);
+	public static String establishConnection(SendMessage toSend) {
+		ServerUser user = (ServerUser)loginManager.getUser("Server");
+		if(user.isReminded() && !user.hasValidLogin()) {
+			return "Invalid login";
+		}
 		ReceiveMessage received = new ReceiveMessage("-1,null,null");
 		try {
 			String host = "kinderlicht.ddns.net";
@@ -37,10 +51,10 @@ public class Client {
 
 			String answer = "";
 			outerwhile: while (!answer.startsWith("30,")) {
-				System.out.println("   Send message:  " + current);
+				System.out.println("[ CLIENT ]    Send message:  " + current);
 				if (!user.hasKey()) {
-					System.out.println("      Attention:  User has no key");
-					current = new SendMessage(20, "", key, user.getName(), "empty");
+					System.out.println("[ CLIENT ]       Attention:  ServerUser has no key");
+					current = new SendMessage(20, "", key, user.getUsername(), "empty");
 					bw.write(current + "");
 				} else {
 					bw.write(current.getEncryptedText(user.getServerKey()));
@@ -48,9 +62,11 @@ public class Client {
 				bw.flush();
 
 				answer = receive(socket);
+				System.out.println("[ CLIENT ] Received answer:  " + answer);
 				// decrypt answer
-				if (user.hasKey()) {
+				if (user.hasKey() && !answer.startsWith("30,")) {
 					String parts[] = answer.split(",", 2);
+					// TODO find first "]" after first "," and delete rest of string
 					String key = parts[1].replace("[", "").replace("]", "");
 					String aescipher = parts[0];
 
@@ -62,20 +78,28 @@ public class Client {
 
 					String aeskey = RSA.decrypt(cypher);
 					answer = AES.decrypt(aeskey, aescipher);
-					System.out.println("Received answer:  " + answer);
+					System.out.println("[ CLIENT ] Received answer:  " + answer);
 				}
 
 				received = new ReceiveMessage(answer);
-				System.out.print(" Interpretation:  ");
-				switch (received.getCode()) {
-				case -1:
-					System.out.println("Invalid message received.");
-					break outerwhile;
-				case 0:
+				System.out.print("[ CLIENT ] Interpretation:  ");
+				STATUS_CODES ret = STATUS_CODES.CONNECTION_END;
+				for (STATUS_CODES code: STATUS_CODES.values()){
+					if  (code.getValue() == received.getCode()) {
+						ret = code;
+						break;
+					}
+				}
+				
+				switch (ret) {
+				case LOGIN_FAILED:
 					System.out.println("Wrong password or username.");
 					// Maybe close connection and ask user for password
+					answer = "30,";
+					//TODO show login mask for user
+					user.setReminded(true);
 					break outerwhile;
-				case 1:
+				case LOGIN_SUCCESS:
 					System.out.println("Login successful.");
 					String[] arguments = received.getArgument().split(",");
 					user.setPermission(Integer.parseInt(arguments[0]));
@@ -87,37 +111,42 @@ public class Client {
 					} else {
 						break;
 					}
-				case 2:
+				case LOGIN_PENDING:
 					System.out.println("Not logged in.");
-					current = new SendMessage(0, "", key, user.getName(), user.getPassword());
+					current = new SendMessage(0, "", key, user.getUsername(), user.getPassword());
 					break;
-				case 10:
+				case MESSAGE_UNKNOWN:
 					System.out.println("Message " + toSend + " is not a valid message.");
 					break outerwhile;
-				case 11:
+				case MESSAGE_SUCCESS:
 					System.out.println("Message has been processed successfully.");
 					break outerwhile;
-				case 12:
-					System.out.println("Message has wright format but a server-side error occured.");
+				case MESSAGE_FAILED:
+					System.out.println("Message has correct format but a server-side error occured.");
 					break outerwhile;
-				case 20:
+				case TOKEN_EXPIRED:
 					System.out.println("Token expired, login again...");
-					current = new SendMessage(0, "", key, user.getName(), user.getPassword());
+					current = new SendMessage(0, "", key, user.getUsername(), user.getPassword());
 					break;
-				case 21:
-					System.out.println("Token invalid, login again...");
+				case TOKEN_INVALID:
+					System.out.println("Token invalid. End connection!");
 					break outerwhile;
-				case 22:
+				case TOKEN_VALID:
+					System.out.println("Token is valid!");
 					break;
-				case 30:
+				case CONNECTION_END:
+					System.out.println("Server terminated connection. Reason: " + received.getArgument());
+					if(received.getArgument().contains("Unexpected failure: ")) {
+						//ExceptionView.createAlertDialog("Unerwarteter Fehler", "Der Server hat die Verbindung geschlossen.", "M�glicherweise musst Du Dich erneut anmelden.\nEs gibt ein Problem mit der Serverkommunikation.\nKann das Problem nicht durch eine erneute Anmeldung gel�st werden, wende Dich bitte an matthias.kettl@kinderlicht-wallersdorf.de", new Exception(received.getArgument()));
+					}
 					break outerwhile;
-				case 40:
+				case CRYPTO_KEYEXCHANGE:
 					System.out.println("Received public key: " + received.getKey());
 					user.setServerKey(received.getKey());
 					user.setToken(received.getArgument());
 					current = toSend;
-					if(current.getCode() == 20) {
-						//Message exchange is executed
+					if (current.getCode() == 20) {
+						// Message exchange is executed
 						break outerwhile;
 					}
 					break;
@@ -126,21 +155,27 @@ public class Client {
 				}
 				toSend.setToken(user.getToken());
 			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
+		} catch (java.net.ConnectException exception) {
+			System.out.println("\n[ CLIENT ] Connecting to server failed.");
+			//ExceptionView.createAlertDialog("Server offline", "Der Server scheint offline zu sein.", "Wartungsarbeiten sind normalerweise innerhalb einer Stunde abgeschlossen.\nGerne kannst Du uns �ber diesen Vorfall informieren.\nE-Mail: service@kinderlicht-wallersdorf.de", exception);
+		} catch (IOException e) {
+			System.out.println("\n[ CLIENT ] Socket connection can not be established due to an IOException.");
+			//ExceptionView.createAlertDialog("Datei-Fehler", "Die .ini Datei konnte nicht gefunden werden.", "Bitte platziere die config.ini in den Programmordner.", e);
 		} finally {
 			// Closing the socket
 			try {
 				socket.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.out.println("\n[ CLIENT ] Closing socket failed.");
+				//ExceptionView.createAlertDialog("Server offline", "Der Server scheint offline zu sein. Wartungsarbeiten sind normalerweise innerhalb einer Stunde abgeschlossen.", e);
+				//e.printStackTrace();
 			}
 		}
-		return received;
+		return received.getArgument();
 	}
 
 	private static String receive(Socket socket) throws IOException {
-		byte[] messageByte = new byte[8 * 1024];
+		byte[] messageByte = new byte[20 * 1024];
 		boolean end = false;
 		String dataString = "";
 
@@ -157,16 +192,20 @@ public class Client {
 		return dataString.replace(endingsequence, "");
 	}
 
-	public static void getTable(String sql) {
-		ResultSet rs = new ResultSet(sql);
-		while (rs.hasNext()) {
-			for (int i = 0; i < rs.getLabelCount(); i++) {
-				System.out.print(rs.get(i) + " ");
-			}
-			System.out.println();
-			rs.next();
-		}
-	}
+//	public static void main(String[] args) {
+//		getTable(establishConnection(new SendMessage(32, "", key, "mat@kat.de", "none")));
+//	}
+
+//	public static void getTable(String sql) {
+//		ResultSet rs = new ResultSet(sql);
+//		while (rs.hasNext()) {
+//			for (int i = 0; i < rs.getLabelCount(); i++) {
+//				System.out.print(rs.get(i) + " ");
+//			}
+//			System.out.println();
+//			rs.next();
+//		}
+//	}
 
 }
 
@@ -188,12 +227,12 @@ class SendMessage {
 		this.argument = argument;
 	}
 
-	public SendMessage(int code, String token, String publicKey, User user, String argument) {
+	public SendMessage(int code, String token, String publicKey, ServerUser user, String argument) {
 		this.code = code;
 		if (token.equals(""))
 			token = "empty";
 		this.token = token;
-		this.username = user.getName();
+		this.username = user.getUsername();
 		this.publicKey = publicKey;
 		this.argument = argument;
 	}
@@ -208,7 +247,6 @@ class SendMessage {
 		String parts[] = key.split("/");
 		BigInteger[] keys = { new BigInteger(parts[0]), new BigInteger("0"), new BigInteger(parts[1]) };
 		BigInteger[] enckey = RSA.encrypt(aeskey, keys);
-
 		String result = "";
 		for (BigInteger bigInteger : enckey) {
 			result += "/" + bigInteger;
@@ -280,4 +318,34 @@ class ReceiveMessage {
 		return argument;
 	}
 
+}
+
+enum RETURN_CODES {
+	LOGIN(0), SQL_SELECT(10), CRYPTO_KEYEXCHANGE(20), WEBLING_ACCOUNT(30), WEBLING_ENTRIES_ACCOUNT(31),
+	WEBLING_NOTIFICATION(32);
+
+	private final int value;
+
+	private RETURN_CODES(int value) {
+		this.value = value;
+	}
+
+	public int getValue() {
+		return value;
+	}
+}
+
+enum STATUS_CODES {
+	LOGIN_FAILED(0), LOGIN_SUCCESS(1), LOGIN_PENDING(2), MESSAGE_UNKNOWN(10), MESSAGE_SUCCESS(11), MESSAGE_FAILED(12),
+	TOKEN_EXPIRED(20), TOKEN_INVALID(21), TOKEN_VALID(22), CONNECTION_END(30), CRYPTO_KEYEXCHANGE(40);
+
+	private final int value;
+
+	private STATUS_CODES(int value) {
+		this.value = value;
+	}
+
+	public int getValue() {
+		return value;
+	}
 }
