@@ -1,4 +1,4 @@
-package com.kinderlicht.webserver;
+package de.kettl.webserver;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -37,8 +37,8 @@ public class AES {
 
             // Return the cipherbytes as a Base64-encoded string
             return Base64.getEncoder().encodeToString(messagebytes);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -64,8 +64,8 @@ public class AES {
 
             // Return plaintext as String
             return new String(byte_array, Charset.defaultCharset());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return null;

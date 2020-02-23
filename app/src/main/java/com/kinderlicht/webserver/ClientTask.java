@@ -2,17 +2,11 @@ package com.kinderlicht.webserver;
 
 import android.os.AsyncTask;
 
-import com.kinderlicht.authentication.ServerUser;
 
-public class ClientTask extends AsyncTask<String, Void, String> {
-
-    @Override
-    protected String doInBackground(String... strings) {
-        return ((ServerUser) (Client.loginManager.getUser("Server"))).sendMessage(10, strings[0]);
-    }
+public class ClientTask extends AsyncTask<ServerMessage, Void, String> {
 
     @Override
-    protected void onPostExecute(String string){
-        System.out.println(string);
+    protected String doInBackground(ServerMessage... message) {
+        return ClientWrapper.sendMessage(message[0].getCode(), message[0].getMessage());
     }
 }

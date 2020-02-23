@@ -1,9 +1,4 @@
-package com.kinderlicht.webserver;
-
-import android.util.Log;
-
-import com.kinderlicht.authentication.LoginManager;
-import com.kinderlicht.authentication.ServerUser;
+package de.kettl.webserver;
 
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -18,27 +13,36 @@ import java.util.stream.Collectors;
 
 public class Client {
 
-	public static LoginManager loginManager = new LoginManager();
-	private static Socket socket;
+	private Socket socket;
 	private static final String endingsequence = "<<<endingsequence>>>";
 	private static final String key = RSA.getPublicKey()[0] + "/" + RSA.getPublicKey()[1];
-
+	private ConnectionSettings settings;
+	private ExceptionHandler handler;
 	// code,token,key,username,message
 	
-	public static String establishConnection(int code, String token, String argument) {
-		SendMessage toSend = new SendMessage(code, token, key, (ServerUser)loginManager.getUser("Server"), argument);
+	public Client(ConnectionSettings settings, ExceptionHandler handler) {
+		this.settings = settings;
+		this.handler = handler;
+	}
+	
+	public void updateSettings(ConnectionSettings newSettings) {
+		settings = newSettings;
+	}
+	
+	public String establishConnection(ReturnCodes code, String argument){
+		SendMessage toSend = new SendMessage(code, settings.getUser().getToken(), key, settings.getUser(), argument);
 		return establishConnection(toSend);
 	}
 
-	public static String establishConnection(SendMessage toSend) {
-		ServerUser user = (ServerUser)loginManager.getUser("Server");
+	private String establishConnection(SendMessage toSend) {
+		User user = settings.getUser();
 		if(user.isReminded() && !user.hasValidLogin()) {
 			return "Invalid login";
 		}
 		ReceiveMessage received = new ReceiveMessage("-1,null,null");
 		try {
-			String host = "kinderlicht.ddns.net";
-			int port = 65432;
+			String host = settings.getHost();
+			int port = Integer.parseInt(settings.getPort());
 			InetAddress address = InetAddress.getByName(host);
 			socket = new Socket(address, port);
 
@@ -50,13 +54,14 @@ public class Client {
 			SendMessage current = toSend;
 
 			String answer = "";
-			outerwhile: while (!answer.startsWith("30,")) {
+			outerwhile: while (!answer.startsWith(StatusCodes.CONNECTION_END.getValue()+"")) {
 				System.out.println("[ CLIENT ]    Send message:  " + current);
 				if (!user.hasKey()) {
 					System.out.println("[ CLIENT ]       Attention:  ServerUser has no key");
-					current = new SendMessage(20, "", key, user.getUsername(), "empty");
+					current = new SendMessage(ReturnCodes.CRYPTO_KEYEXCHANGE, "", key, user.getUsername(), "empty");
 					bw.write(current + "");
 				} else {
+					System.out.println("YOOOOOOOOOOOOOOOOOOOOOOOOO " + user.getServerKey());
 					bw.write(current.getEncryptedText(user.getServerKey()));
 				}
 				bw.flush();
@@ -64,7 +69,7 @@ public class Client {
 				answer = receive(socket);
 				System.out.println("[ CLIENT ] Received answer:  " + answer);
 				// decrypt answer
-				if (user.hasKey() && !answer.startsWith("30,")) {
+				if (user.hasKey() && !answer.startsWith(StatusCodes.CONNECTION_END.getValue()+"") && !answer.startsWith(StatusCodes.CONNECTION_END_WITH_EXCEPTION.getValue()+"")) {
 					String parts[] = answer.split(",", 2);
 					// TODO find first "]" after first "," and delete rest of string
 					String key = parts[1].replace("[", "").replace("]", "");
@@ -82,9 +87,9 @@ public class Client {
 				}
 
 				received = new ReceiveMessage(answer);
-				System.out.print("[ CLIENT ] Interpretation:  ");
-				STATUS_CODES ret = STATUS_CODES.CONNECTION_END;
-				for (STATUS_CODES code: STATUS_CODES.values()){
+				String interpretation = "[ CLIENT ]  Interpretation:  ";
+				StatusCodes ret = StatusCodes.CONNECTION_END;
+				for (StatusCodes code: StatusCodes.values()){
 					if  (code.getValue() == received.getCode()) {
 						ret = code;
 						break;
@@ -93,14 +98,14 @@ public class Client {
 				
 				switch (ret) {
 				case LOGIN_FAILED:
-					System.out.println("Wrong password or username.");
+					System.out.println(interpretation + "Wrong password or username.");
 					// Maybe close connection and ask user for password
-					answer = "30,";
+					answer = StatusCodes.CONNECTION_END.getValue()+",";
 					//TODO show login mask for user
 					user.setReminded(true);
 					break outerwhile;
 				case LOGIN_SUCCESS:
-					System.out.println("Login successful.");
+					System.out.println(interpretation + "Login successful.");
 					String[] arguments = received.getArgument().split(",");
 					user.setPermission(Integer.parseInt(arguments[0]));
 					user.setToken(arguments[1]);
@@ -112,36 +117,37 @@ public class Client {
 						break;
 					}
 				case LOGIN_PENDING:
-					System.out.println("Not logged in.");
-					current = new SendMessage(0, "", key, user.getUsername(), user.getPassword());
+					System.out.println(interpretation + "Not logged in.");
+					current = new SendMessage(ReturnCodes.LOGIN, "", key, user.getUsername(), user.getPassword());
 					break;
 				case MESSAGE_UNKNOWN:
-					System.out.println("Message " + toSend + " is not a valid message.");
+					System.out.println(interpretation + "Message " + toSend + " is not a valid message.");
 					break outerwhile;
 				case MESSAGE_SUCCESS:
-					System.out.println("Message has been processed successfully.");
+					System.out.println(interpretation + "Message has been processed successfully.");
+					answer = StatusCodes.CONNECTION_END.getValue()+",";
 					break outerwhile;
 				case MESSAGE_FAILED:
-					System.out.println("Message has correct format but a server-side error occured.");
+					System.out.println(interpretation + "Message has correct format but a server-side error occured.");
 					break outerwhile;
 				case TOKEN_EXPIRED:
-					System.out.println("Token expired, login again...");
-					current = new SendMessage(0, "", key, user.getUsername(), user.getPassword());
+					System.out.println(interpretation + "Token expired, login again...");
+					current = new SendMessage(ReturnCodes.LOGIN, "", key, user.getUsername(), user.getPassword());
 					break;
 				case TOKEN_INVALID:
-					System.out.println("Token invalid. End connection!");
+					System.out.println(interpretation + "Token invalid. End connection!");
 					break outerwhile;
 				case TOKEN_VALID:
-					System.out.println("Token is valid!");
+					System.out.println(interpretation + "Token is valid!");
 					break;
+				case CONNECTION_END_WITH_EXCEPTION:
+					handler.handle(ret, new Exception(received.getArgument()), "Verbindung geschlossen", "Die Verbindung wurde wegen eines unerwarteten Fehlers geschlossen.", "Eventuell besteht keine Verbindung zum Server. Ein Neustart des Programms kann m�glicherwei�e helfen.");
+					user.setServerKey("");
 				case CONNECTION_END:
-					System.out.println("Server terminated connection. Reason: " + received.getArgument());
-					if(received.getArgument().contains("Unexpected failure: ")) {
-						//ExceptionView.createAlertDialog("Unerwarteter Fehler", "Der Server hat die Verbindung geschlossen.", "M�glicherweise musst Du Dich erneut anmelden.\nEs gibt ein Problem mit der Serverkommunikation.\nKann das Problem nicht durch eine erneute Anmeldung gel�st werden, wende Dich bitte an matthias.kettl@kinderlicht-wallersdorf.de", new Exception(received.getArgument()));
-					}
+					System.out.println(interpretation + "Server terminated connection. Reason: " + received.getArgument());
 					break outerwhile;
 				case CRYPTO_KEYEXCHANGE:
-					System.out.println("Received public key: " + received.getKey());
+					System.out.println(interpretation + "Received public key: " + received.getKey());
 					user.setServerKey(received.getKey());
 					user.setToken(received.getArgument());
 					current = toSend;
@@ -156,17 +162,19 @@ public class Client {
 				toSend.setToken(user.getToken());
 			}
 		} catch (java.net.ConnectException exception) {
-			System.out.println("\n[ CLIENT ] Connecting to server failed.");
-			//ExceptionView.createAlertDialog("Server offline", "Der Server scheint offline zu sein.", "Wartungsarbeiten sind normalerweise innerhalb einer Stunde abgeschlossen.\nGerne kannst Du uns �ber diesen Vorfall informieren.\nE-Mail: service@kinderlicht-wallersdorf.de", exception);
+			System.out.println("[ CLIENT ] Connecting to server failed.");
+			handler.handle(StatusCodes.EXTERNAL_ERROR, exception, "Server offline", "Der Server scheint offline zu sein.", "Wartungsarbeiten sind normalerweise innerhalb einer Stunde abgeschlossen.\nGerne kannst Du uns �ber diesen Vorfall informieren.\nE-Mail: service@kinderlicht-wallersdorf.de");
+			//handler.handleException(StatusCodes.EXTERNAL_ERROR, exception, );
 		} catch (IOException e) {
-			System.out.println("\n[ CLIENT ] Socket connection can not be established due to an IOException.");
-			//ExceptionView.createAlertDialog("Datei-Fehler", "Die .ini Datei konnte nicht gefunden werden.", "Bitte platziere die config.ini in den Programmordner.", e);
+			System.out.println("[ CLIENT ] Socket connection can not be established due to an IOException.");
+			handler.handle(StatusCodes.EXTERNAL_ERROR, e, "Datei-Fehler oder Server offfline", "M�glicherweise ist die 'config.ini'-Datei nicht richtig platziert. Wenn doch, ist m�glicherweise der Server offline.", "Bitte platziere die config.ini in den Programmordner oder �berpr�fe, ob der Server erreichbar ist.");
 		} finally {
 			// Closing the socket
 			try {
 				socket.close();
 			} catch (Exception e) {
-				System.out.println("\n[ CLIENT ] Closing socket failed.");
+				System.out.println("[ CLIENT ] Closing socket failed.");
+				//throw new ClientException(StatusCodes.EXTERNAL_ERROR, e, "Datei-Fehler", "Die .ini Datei konnte nicht gefunden werden.", "Bitte platziere die config.ini in den Programmordner.");
 				//ExceptionView.createAlertDialog("Server offline", "Der Server scheint offline zu sein. Wartungsarbeiten sind normalerweise innerhalb einer Stunde abgeschlossen.", e);
 				//e.printStackTrace();
 			}
@@ -174,7 +182,7 @@ public class Client {
 		return received.getArgument();
 	}
 
-	private static String receive(Socket socket) throws IOException {
+	private String receive(Socket socket) throws IOException {
 		byte[] messageByte = new byte[20 * 1024];
 		boolean end = false;
 		String dataString = "";
@@ -192,22 +200,7 @@ public class Client {
 		return dataString.replace(endingsequence, "");
 	}
 
-//	public static void main(String[] args) {
-//		getTable(establishConnection(new SendMessage(32, "", key, "mat@kat.de", "none")));
-//	}
-
-//	public static void getTable(String sql) {
-//		ResultSet rs = new ResultSet(sql);
-//		while (rs.hasNext()) {
-//			for (int i = 0; i < rs.getLabelCount(); i++) {
-//				System.out.print(rs.get(i) + " ");
-//			}
-//			System.out.println();
-//			rs.next();
-//		}
-//	}
-
-}
+}   
 
 class SendMessage {
 
@@ -217,8 +210,8 @@ class SendMessage {
 	private String publicKey;
 	private String username;
 
-	public SendMessage(int code, String token, String publicKey, String username, String argument) {
-		this.code = code;
+	public SendMessage(ReturnCodes code, String token, String publicKey, String username, String argument) {
+		this.code = code.getValue();
 		if (token.equals(""))
 			token = "empty";
 		this.token = token;
@@ -227,8 +220,18 @@ class SendMessage {
 		this.argument = argument;
 	}
 
-	public SendMessage(int code, String token, String publicKey, ServerUser user, String argument) {
+	public SendMessage(int code, String token, String publicKey, User user, String argument) {
 		this.code = code;
+		if (token.equals(""))
+			token = "empty";
+		this.token = token;
+		this.username = user.getUsername();
+		this.publicKey = publicKey;
+		this.argument = argument;
+	}
+	
+	public SendMessage(ReturnCodes code, String token, String publicKey, User user, String argument) {
+		this.code = code.getValue();
 		if (token.equals(""))
 			token = "empty";
 		this.token = token;
@@ -245,7 +248,7 @@ class SendMessage {
 		String aeskey = AES.keyGen(16);
 		String ret = AES.encrypt(aeskey, toString());
 		String parts[] = key.split("/");
-		BigInteger[] keys = { new BigInteger(parts[0]), new BigInteger("0"), new BigInteger(parts[1]) };
+		BigInteger[] keys = { new BigInteger(parts[0]), BigInteger.ZERO, new BigInteger(parts[1]) };
 		BigInteger[] enckey = RSA.encrypt(aeskey, keys);
 		String result = "";
 		for (BigInteger bigInteger : enckey) {
@@ -285,8 +288,8 @@ class ReceiveMessage {
 	private String argument;
 	private String publicKey;
 
-	public ReceiveMessage(int code, String publicKey, String argument) {
-		this.code = code;
+	public ReceiveMessage(StatusCodes code, String publicKey, String argument) {
+		this.code = code.getValue();
 		this.publicKey = publicKey;
 		this.argument = argument;
 	}
@@ -318,34 +321,4 @@ class ReceiveMessage {
 		return argument;
 	}
 
-}
-
-enum RETURN_CODES {
-	LOGIN(0), SQL_SELECT(10), CRYPTO_KEYEXCHANGE(20), WEBLING_ACCOUNT(30), WEBLING_ENTRIES_ACCOUNT(31),
-	WEBLING_NOTIFICATION(32);
-
-	private final int value;
-
-	private RETURN_CODES(int value) {
-		this.value = value;
-	}
-
-	public int getValue() {
-		return value;
-	}
-}
-
-enum STATUS_CODES {
-	LOGIN_FAILED(0), LOGIN_SUCCESS(1), LOGIN_PENDING(2), MESSAGE_UNKNOWN(10), MESSAGE_SUCCESS(11), MESSAGE_FAILED(12),
-	TOKEN_EXPIRED(20), TOKEN_INVALID(21), TOKEN_VALID(22), CONNECTION_END(30), CRYPTO_KEYEXCHANGE(40);
-
-	private final int value;
-
-	private STATUS_CODES(int value) {
-		this.value = value;
-	}
-
-	public int getValue() {
-		return value;
-	}
 }

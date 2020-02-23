@@ -1,4 +1,4 @@
-package com.kinderlicht.webserver;
+package de.kettl.webserver;
 
 import java.util.ArrayList;
 import java.util.HashMap;

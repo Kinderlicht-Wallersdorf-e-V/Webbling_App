@@ -1,6 +1,6 @@
-package com.kinderlicht.authentication;
+package de.kettl.webserver;
 
-public abstract class User {
+public class User {
 
 	private String username;
 	private String password;
@@ -8,13 +8,48 @@ public abstract class User {
 	private boolean validLogin;
 	private boolean reminded;
 	
-	public User(String username, String password) {
+	private String token;
+	private String serverKey;
+	private int permission;
+	
+	public int getPermission() {
+		return permission;
+	}
+	
+	public void setPermission(int perm) {
+		permission = perm;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getServerKey() {
+		return serverKey;
+	}
+
+	public void setServerKey(String serverKey) {
+		this.serverKey = serverKey;
+	}
+	
+	public boolean hasKey() {
+		return !serverKey.equals("");
+	}
+	
+	public User(String username, String password, String token, int permission) {
 		this.setUsername(username);
 		this.setPassword(password);
 		this.setValidLogin(!username.equals("") && !password.equals(""));
 		if(!hasValidLogin())
 		System.out.println("login");
 		this.setReminded(false);
+		this.token = token;
+		this.permission = permission;
+		serverKey = "";
 	}
 
 	public String getUsername() {

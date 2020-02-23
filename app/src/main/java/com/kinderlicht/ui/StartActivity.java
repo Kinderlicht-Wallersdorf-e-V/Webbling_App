@@ -42,8 +42,12 @@ import com.kinderlicht.json.Member;
 import com.kinderlicht.json.Parser;
 import com.kinderlicht.sql.Connector;
 import com.kinderlicht.webserver.ClientTask;
+import com.kinderlicht.webserver.ServerMessage;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import de.kettl.webserver.*;
 
 public class StartActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -249,7 +253,32 @@ public class StartActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            new ClientTask().execute("SELECT * FROM user");
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+
+                        String result = new ClientTask().execute(ServerMessage.of(ReturnCodes.SQL_SELECT, "SELECT * FROM pro_user")).get();
+
+                        // als Tabelle ausgeben
+                        ResultSet rs = new ResultSet(result);
+
+                        while (rs.hasNext()) {
+                            for (int i = 0; i < rs.getLabelCount(); i++) {
+                                System.out.print(rs.get(i) + " ");
+                            }
+                            System.out.println();
+                            rs.next();
+                        }
+
+                        System.out.println("RESULT: " + result);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
             return true;
         }
 

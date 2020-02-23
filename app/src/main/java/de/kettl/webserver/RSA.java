@@ -1,4 +1,4 @@
-package com.kinderlicht.webserver;
+package de.kettl.webserver;
 
 import java.util.Random;
 import java.math.*;
